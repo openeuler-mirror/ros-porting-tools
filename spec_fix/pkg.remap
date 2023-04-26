@@ -2,6 +2,7 @@ gtest gtest-devel
 tinyxml2 tinyxml2-devel
 tinyxml tinyxml-devel
 yaml-cpp yaml-cpp-devel
+yaml yaml-cpp-devel
 libxml2-utils libxml2
 pydocstyle python3-pydocstyle
 pkg-config pkgconfig
