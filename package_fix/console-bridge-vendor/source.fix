@@ -1,0 +1,2 @@
+Source1:        1.0.2.tar.gz
+Patch0: 0-console-bridge-vendor-change-cmake-download.patch
