@@ -82,7 +82,7 @@ main()
 			continue
 		fi
 
-		s=`grep "${project}.spec" ${OUTPUT}/.all_spec`
+		s=`grep "${project}.spec" .all_spec`
 
 		[ "$s" == "" ] && continue
 		cp $s ${ROS_GRAPH_BASE}
