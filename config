@@ -1,0 +1,8 @@
+ROS_DISTRO=humble
+SRC_TAR_FROM=ubuntu
+DEBUG=no
+SRC_TAR_BASE_URL=https://packages.ros.org/ros2/ubuntu/pool/main/r
+GITEE_ORG=will_niutao
+GITEE_DOMAIN=gitee.com
+OBS_DOMAIN=build.openeuler.openatom.cn
+OBS_PROJECT=openEuler:ROS:humble
