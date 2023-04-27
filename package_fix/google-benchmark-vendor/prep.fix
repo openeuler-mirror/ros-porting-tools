@@ -1,2 +1,0 @@
-cp %{SOURCE1} .
-cp ${RPM_SOURCE_DIR}/0-google-benchmark-vendor-change-cmake-download.patch .

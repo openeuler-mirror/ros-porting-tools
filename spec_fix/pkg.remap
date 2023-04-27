@@ -41,3 +41,4 @@ zbar zbar-devel
 zlib zlib-devel
 libsqlite3-dev sqlite-devel
 google-mock gmock-devel
+benchmark google-benchmark-devel
