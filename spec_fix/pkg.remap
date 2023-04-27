@@ -45,3 +45,6 @@ benchmark google-benchmark-devel
 libcunit-dev CUnit-devel
 libssl-dev openssl-devel
 asio asio-devel
+libopencv-dev opencv
+pybind11-dev pybind11-devel
+libconsole-bridge-dev console-bridge-devel
