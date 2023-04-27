@@ -51,3 +51,7 @@ libconsole-bridge-dev console-bridge-devel
 libboost-program-options boost-program-options
 libboost-program-options-dev boost-devel
 uuid libuuid-devel
+liborocos-kdl-dev orocos-kdl-devel
+libgflags-dev gflags-devel
+libboost-filesystem-dev boost-devel
+libceres-dev ceres-solver-devel
