@@ -42,3 +42,6 @@ zlib zlib-devel
 libsqlite3-dev sqlite-devel
 google-mock gmock-devel
 benchmark google-benchmark-devel
+libcunit-dev CUnit-devel
+libssl-dev openssl-devel
+asio asio-devel
