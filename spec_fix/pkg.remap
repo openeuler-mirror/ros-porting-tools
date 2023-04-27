@@ -50,3 +50,4 @@ pybind11-dev pybind11-devel
 libconsole-bridge-dev console-bridge-devel
 libboost-program-options boost-program-options
 libboost-program-options-dev boost-devel
+uuid libuuid-devel
