@@ -102,7 +102,7 @@ main()
 	then
 		for i in `cat ${ROS_OUTPUT_TMP}/.build_succeeded`
 		do
-			sed -i "/Requires: $i/d" *.spec
+			sed -i "/Requires: $i$/d" *.spec
 		done
 	fi
 
@@ -110,7 +110,7 @@ main()
 
 	while read project
 	do
-		sed -i "/$project/d" ros.dot
+		sed -i "/$project$/d" ros.dot
 	done < .succeeded.list
 
 	get_deps 1 ros.deps.more
