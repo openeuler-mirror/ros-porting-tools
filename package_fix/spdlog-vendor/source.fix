@@ -1,3 +1,0 @@
-Source1:        v1.8.2.tar.gz
-
-Patch0: 0-spdlog-vendor-change-cmake-download.patch
