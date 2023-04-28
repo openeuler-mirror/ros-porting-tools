@@ -68,3 +68,8 @@ boost boost-devel
 graphicsmagick GraphicsMagick-c++-devel
 libzmq3-dev cppzmq-devel
 libncurses-dev ncurses-devel
+libboost-iostreams-dev boost-devel
+libcairo2-dev cairo-devel
+libabsl-dev abseil-cpp-devel
+libgoogle-glog-dev glog-devel
+lua5.2-dev lua-devel
