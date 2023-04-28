@@ -55,3 +55,4 @@ liborocos-kdl-dev orocos-kdl-devel
 libgflags-dev gflags-devel
 libboost-filesystem-dev boost-devel
 libceres-dev ceres-solver-devel
+python3-pkg-resources python3-setuptools
