@@ -65,3 +65,4 @@ libqt5-core qt5-qtbase
 qtbase5-dev qt5-qtbase-devel
 libqt5-gui qt5-qt5-qtbase-gui
 boost boost-devel
+graphicsmagick GraphicsMagick-c++-devel
