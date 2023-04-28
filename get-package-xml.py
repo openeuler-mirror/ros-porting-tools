@@ -19,8 +19,10 @@ def get_depend(depend_name, org_depend_file_name):
             if ros_version == "1":
                 continue
         if dep.hasAttribute("condition"):
-            ros_version = dep.getAttribute("condition")
-            if ros_version == "$ROS_VERSION == 1":
+            condition = dep.getAttribute("condition")
+            if condition == "$ROS_VERSION == 1":
+                continue
+            if condition == "$ROS_PYTHON_VERSION == 2":
                 continue
 
         if dep.hasAttribute("type"):
