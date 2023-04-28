@@ -18,6 +18,10 @@ def get_depend(depend_name, org_depend_file_name):
             ros_version = dep.getAttribute("ROS_VERSION")
             if ros_version == "1":
                 continue
+        if dep.hasAttribute("condition"):
+            ros_version = dep.getAttribute("condition")
+            if ros_version == "$ROS_VERSION == 1":
+                continue
 
         if dep.hasAttribute("type"):
             url_type = dep.getAttribute("type")

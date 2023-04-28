@@ -1,4 +1,2 @@
--python3-opencv
 -libboost-python-dev
 -libopencv-dev
-+opencv-devel
