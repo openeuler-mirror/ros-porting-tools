@@ -1,1 +1,17 @@
 angles cmake
+message-filters cmake
+pal-statistics cmake
+resource-retriever cmake
+dataspeed-ulc-can cmake
+simple-actions cmake
+neo-simulation2 cmake
+camera-calibration-parsers cmake
+rqt-image-overlay cmake
+ruckig cmake
+rtabmap-ros cmake
+python-qt-binding cmake
+qt-gui-py-common cmake
+qt-dotgraph cmake
+qt-gui-cpp cmake
+rqt-image-view cmake
+geodesy cmake

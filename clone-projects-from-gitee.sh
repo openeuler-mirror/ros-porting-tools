@@ -29,7 +29,8 @@ main()
 		
 		if [ -d ${GITEE_BASE}/${project}/.git ]
 		then
-			info_log "project ${project} has been clone, ignore"
+			cd ${GITEE_BASE}/${project}
+			git pull origin humble
 			continue
 		fi
 

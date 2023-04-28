@@ -31,6 +31,7 @@ ROS_TEST_BUILDREQUIRES
 Provides:       %{name}-devel = %{version}-%{release}
 Provides:       %{name}-doc = %{version}-%{release}
 Provides:       %{name}-runtime = %{version}-%{release}
+ROS_PROVIDES_FIX
 
 %description
 ROS_PACKAGE_DESCRIPTION

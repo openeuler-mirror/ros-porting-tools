@@ -189,6 +189,7 @@ modify_spec()
 	gen_requires $pkg Requires Requires ROS_PACKAGE_REQUIRES $spec
 	gen_requires $pkg BuildRequires BuildRequires ROS_PACKAGE_BUILDREQUIRES $spec
 	gen_requires $pkg test-BuildRequires BuildRequires ROS_TEST_BUILDREQUIRES $spec
+	replace_key_word ROS_PROVIDES_FIX ${ROOT}/spec_fix/$pkg.Provides $spec
 
 	if [ "$pkg" == "ament-cmake-core" -o "$pkg" == "ament-package" -o "$pkg" == "ros-workspace" ]
 	then
