@@ -60,3 +60,8 @@ libboost-python boost-python3
 libboost-dev boost-devel
 libboost-python-dev boost-devel
 python3-opencv opencv
+liblapack-dev lapack-devel
+libqt5-core qt5-qtbase
+qtbase5-dev qt5-qtbase-devel
+libqt5-gui qt5-qt5-qtbase-gui
+boost boost-devel
