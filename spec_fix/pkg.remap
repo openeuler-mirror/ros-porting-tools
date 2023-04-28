@@ -56,3 +56,7 @@ libgflags-dev gflags-devel
 libboost-filesystem-dev boost-devel
 libceres-dev ceres-solver-devel
 python3-pkg-resources python3-setuptools
+libboost-python boost-python3
+libboost-dev boost-devel
+libboost-python-dev boost-devel
+python3-opencv opencv
