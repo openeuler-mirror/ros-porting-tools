@@ -36,6 +36,7 @@ main()
 
 	info_log "Start to analyse ros-pkg."
 	cd ${ROS_OUTPUT_TMP}
+	rm -f src
 	wget http://119.3.219.20:82/openEuler:/ROS:/humble/standard_x86_64/src
 	grep "\.src.rpm" src | awk -F"href=\"" '{print $2}' | cut -d'"' -f1 | sed -e "s/\-[[:digit:]]\+\..*//g" >.build_succeeded
 
