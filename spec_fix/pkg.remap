@@ -78,3 +78,4 @@ libfreetype6-dev freetype-devel
 opengl mesa-libGL-devel
 libpcl-all-dev pcl-devel
 libflann-dev flann-devel
+nlohmann-json-dev nlohmann-json-devel
