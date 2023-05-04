@@ -279,3 +279,11 @@ visualization-msgs
 yaml-cpp-vendor
 ydlidar
 zstd-vendor
+camera-calibration-parsers
+camera-info-manager
+v4l2-camera
+image-transport
+image-transport-plugins
+compressed-depth-image-transport
+compressed-image-transport
+theora-image-transport
