@@ -3,3 +3,4 @@ mavlink
 sophus
 libnabo
 rviz-visual-testing-framework
+magic-enum
