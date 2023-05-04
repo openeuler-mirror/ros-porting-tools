@@ -201,7 +201,7 @@ modify_spec()
         debug_log "gen changelog"
         maintainer=`grep maintainer: ${ROS_DEPS_BASE}/$pkg-PackageXml | awk -F"maintainer:" '{print $2}'`
         #changetime=`date +"%a %b %d %Y"`
-        changetime=`date +"%b %Y"`
+        changetime="Thu May 04 2023"
         changelog="$changetime $maintainer - $base_version-$release_version"
         sed -i "s#ROS_PACKAGE_CHANGELOG#$changelog#g" $spec
 
