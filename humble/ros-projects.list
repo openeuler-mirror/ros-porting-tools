@@ -536,7 +536,7 @@ octomap-ros	https://github.com/OctoMap/octomap_ros/tree/ros2	maintained	0.4.3-1
 octomap-rviz-plugins	https://github.com/OctoMap/octomap_rviz_plugins/tree/ros2	maintained	2.0.0-3
 octomap-server	https://github.com/OctoMap/octomap_mapping/tree/ros2	maintained	2.0.0-3
 octovis	https://github.com/octomap/octomap/tree/devel	maintained	1.9.8-1
-ompl	https://github.com/ros2-gbp/ompl-release.git	unknown	1.6.0-1
+ompl	https://github.com/ompl/ompl.git	developed	1.6.0-1
 open3d-conversions	https://github.com/ros-perception/perception_open3d/tree/humble	developed	0.2.1-1
 orocos-kdl-vendor	https://github.com/ros2/orocos_kdl_vendor/tree/humble	developed	0.2.5-1
 osqp-vendor	https://github.com/tier4/osqp_vendor/tree/main	maintained	0.2.0-1

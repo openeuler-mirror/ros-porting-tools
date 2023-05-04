@@ -51,7 +51,7 @@ spec_fix()
 	then
 		for dep in `grep "^\-" ${spec_fix_file} | sed -e "s#^\-##g"`
 		do
-			sed -i "/^$require_type: *$dep/d" $require_file
+			sed -i "/^$require_type: *$dep\$/d" $require_file
 		done
 	fi
 
