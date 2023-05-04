@@ -81,3 +81,4 @@ libflann-dev flann-devel
 nlohmann-json-dev nlohmann-json-devel
 clang-format clang
 python3-catkin-pkg-modules python3-catkin_pkg
+libopencv-imgproc-dev opencv
