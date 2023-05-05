@@ -82,3 +82,4 @@ nlohmann-json-dev nlohmann-json-devel
 clang-format clang
 python3-catkin-pkg-modules python3-catkin_pkg
 libopencv-imgproc-dev opencv
+python3-rosdistro-modules python3-rosdistro
