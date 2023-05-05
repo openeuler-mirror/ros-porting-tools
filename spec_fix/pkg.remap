@@ -40,6 +40,7 @@ tbb tbb-devel
 zbar zbar-devel
 zlib zlib-devel
 libsqlite3-dev sqlite-devel
+sqlite3 sqlite
 google-mock gmock-devel
 benchmark google-benchmark-devel
 libcunit-dev CUnit-devel
@@ -85,3 +86,4 @@ libopencv-imgproc-dev opencv
 python3-rosdistro-modules python3-rosdistro
 qt5-qmake qt5-qtbase-devel
 python3-qt5-bindings python3-qt5-devel
+libdw-dev elfutils-devel
