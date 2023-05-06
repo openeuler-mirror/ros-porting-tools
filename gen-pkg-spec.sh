@@ -272,6 +272,7 @@ main()
 	        	echo "<multibuild>" >_multibuild
 		fi
 
+		pkg_num=0
                 while read pkg path version
                 do
 			if [ "$GEN_ONE" != "" -a "$pkg" != "$GEN_ONE" ]
@@ -325,11 +326,14 @@ main()
 			then
         	                echo -e "\t<flavor>$pkg</flavor>" >>_multibuild
 			fi
+			pkg_num=`expr $pkg_num + 1`
                 done < ${OUTPUT}/.repo_pkgs
 
 		if [ "$GEN_ONE" == "" ]
 		then
 	                echo "</multibuild>" >>_multibuild
+
+			[ $pkg_num -lt 2 ] && rm _multibuild
 		fi
         done
 
