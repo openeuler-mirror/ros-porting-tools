@@ -88,3 +88,4 @@ qt5-qmake qt5-qtbase-devel
 python3-qt5-bindings python3-qt5-devel
 libdw-dev elfutils-devel
 clang-tidy clang-tools-extra
+libqt5-opengl-dev qt5-qtbase-devel
