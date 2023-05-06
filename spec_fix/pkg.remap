@@ -90,3 +90,11 @@ libdw-dev elfutils-devel
 clang-tidy clang-tools-extra
 libqt5-opengl-dev qt5-qtbase-devel
 range-v3 range-v3-devel
+libboost-date-time boost-date-time
+libboost-random boost-random
+libboost-thread boost-thread
+libboost-random-dev boost-devel
+libboost-thread-dev boost-devel
+libboost-filesystem boost-filesystem
+libboost-date-time-dev boost-devel
+libboost-system-dev boost-devel
