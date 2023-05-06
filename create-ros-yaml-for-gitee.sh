@@ -30,13 +30,8 @@ main()
 		mkdir -p $class
 
 		echo "name: $project" >${ROS_SIG_BASE}/$class/$project.yaml
-		echo "description: The Robot Operating System(ROS) project" >>${ROS_SIG_BASE}/$class/$project.yaml
-		for i in `cd ${ROS_REPO_BASE}/$project && ls *.spec`
-		do
-			sum=`grep "Summary: " ${ROS_REPO_BASE}/$project/$i | awk -F"Summary: " '{print $2}'`
-			summary=`echo $(echo $sum)`
-			echo "  `echo $i | awk -F".spec" '{print $1}'`: $summary" >>${ROS_SIG_BASE}/$class/$project.yaml
-		done
+		specs=`cd ${ROS_REPO_BASE}/$project && ls *.spec | sed -e "s#.spec#,#g" | tr -d '\n' | sed -e "s/,$/./g"`
+		echo "description: The Robot Operating System(ROS) project, include $specs" >>${ROS_SIG_BASE}/$class/$project.yaml
 		echo "upstream: ${SRC_TAR_BASE_URL}" >>${ROS_SIG_BASE}/$class/$project.yaml
 		echo "branches:" >>${ROS_SIG_BASE}/$class/$project.yaml
 		echo "- name: master" >>${ROS_SIG_BASE}/$class/$project.yaml
