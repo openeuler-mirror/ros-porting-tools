@@ -100,3 +100,7 @@ libboost-date-time-dev boost-devel
 libboost-system-dev boost-devel
 libqhull qhull-devel
 libfcl-dev fcl-devel
+libusb-1.0-dev libusbx-devel
+libdbus-dev dbus-devel
+libbluetooth-dev bluez-devel
+libjsoncpp-dev jsoncpp-devel
