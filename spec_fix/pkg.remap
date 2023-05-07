@@ -99,3 +99,4 @@ libboost-filesystem boost-filesystem
 libboost-date-time-dev boost-devel
 libboost-system-dev boost-devel
 libqhull qhull-devel
+libfcl-dev fcl-devel
