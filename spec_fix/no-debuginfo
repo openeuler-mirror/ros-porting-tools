@@ -5,3 +5,5 @@ libnabo
 rviz-visual-testing-framework
 magic-enum
 fluent-rviz
+dataspeed-can-msg-filters
+dataspeed-dbw-common
