@@ -38,7 +38,7 @@ main()
 		rm -f *
 		git checkout -- README.md README.en.md
 		cp ${ROS_REPO_BASE}/${project}/* ${ROS_GITEE_BASE}/${project}
-		git status | grep -qE "modified:|Untracked"
+		git status | grep -qE "modified:|Untracked|deleted:"
 		if [ $? -ne 0 ]
 		then
 			#info_log "nothing changed of project $project, continue"

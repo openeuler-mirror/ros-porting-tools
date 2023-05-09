@@ -15,3 +15,4 @@ qt-dotgraph cmake
 qt-gui-cpp cmake
 rqt-image-view cmake
 geodesy cmake
+moveit-core cmake

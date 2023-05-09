@@ -1,0 +1,20 @@
+diff -Naur ros-humble-pick-ik-1.0.0_org/tests/CMakeLists.txt ros-humble-pick-ik-1.0.0/tests/CMakeLists.txt
+--- ros-humble-pick-ik-1.0.0_org/tests/CMakeLists.txt	2023-05-08 19:56:51.791390734 +0800
++++ ros-humble-pick-ik-1.0.0/tests/CMakeLists.txt	2023-05-08 20:01:35.391545184 +0800
+@@ -1,7 +1,8 @@
+-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+-
+ find_package(Catch2 3.1.0 REQUIRED)
+ 
++if (NOT Catch2_FOUND)
++	list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
++endif()
+ add_executable(test-pick_ik
+     goal_tests.cpp
+     ik_tests.cpp
+@@ -14,4 +15,5 @@
+     Catch2::Catch2WithMain
+     moveit_core::moveit_test_utils
+ )
++include(Catch)
+ catch_discover_tests(test-pick_ik)
