@@ -294,11 +294,11 @@ main()
                 		pkg_dir_name=`cd ${ROS_SRC_BASE}/${repo} && ls ros-${ROS_DISTRO}-${pkg}_*.orig.tar.gz | sed -e "s#.orig.tar.gz##g" | sed -e "s#_#-#g"`
                 		pkg_tar=`cd ${ROS_SRC_BASE}/${repo} && ls ros-${ROS_DISTRO}-${pkg}_*.orig.tar.gz`
 				cp ${ROS_SRC_BASE}/${repo}/$pkg_tar ${ROS_REPO_BASE}/$repo/
-                        	if [ -f ${ROS_SRC_BASE}/${repo}/${pkg_dir_name}/setup.py ]
+                        	if [ -f ${ROS_SRC_BASE}/${repo}/${pkg_dir_name}/CMakeLists.txt ]
                         	then
-                        	        cp ${ROOT}/template/py-ubuntu.spec $pkg.spec
-                        	else
                         	        cp ${ROOT}/template/cmake-ubuntu.spec $pkg.spec
+                        	else
+                        	        cp ${ROOT}/template/py-ubuntu.spec $pkg.spec
                         	fi
 
 				pkg_dir_name=${ROS_SRC_BASE}/${repo}/$pkg_dir_name
