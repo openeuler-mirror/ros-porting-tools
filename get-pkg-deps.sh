@@ -127,6 +127,7 @@ main()
 		gen_depend $pkg $path build_depend build
 		gen_depend $pkg $path build_export_depend exec
 		gen_depend $pkg $path exec_depend exec
+		gen_depend $pkg $path run_depend exec
 		gen_depend $pkg $path test_depend test
 		gen_depend $pkg $path buildtool_depend build
 		gen_depend $pkg $path buildtool_export_depend exec
