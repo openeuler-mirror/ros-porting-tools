@@ -95,6 +95,11 @@ replace_key_word()
         fi
 }
 
+	depend=`grep -P "^${depend_name}:" ${ROS_DEPS_BASE}/$pkg-PackageXml | awk -F"${depend_name}:" '{print $2}'`
+	if [ "$depend" = "" ]
+	then
+		return 0
+	fi
 gen_requires()
 {
 	pkg=$1
@@ -134,39 +139,10 @@ modify_spec()
 
         info_log "gen spec for $pkg"
 
-        debug_log "gen version"
-
-	csrc=`find $pkg_dir_name -name "*.c" | grep -v /test/ | wc -l`
-	cppsrc=`find $pkg_dir_name -name "*.cpp" | grep -v /test/ | wc -l`
-	no_debug=`grep -P "^${pkg}\$" ${ROOT}/spec_fix/no-debuginfo`
-
-	if [ "$csrc" == "0" -a "$cppsrc" == "0" ] || [ "$no_debug" != "" ]
-	then
-                sed -i "s#ROS_PACKAGE_NO_DEBUGINFO#%global debug_package %{nil}#g" $spec
-	else
-                sed -i '/ROS_PACKAGE_NO_DEBUGINFO/d' $spec
-	fi
-
-
-        sed -i "s#ROS_PACKAGE_NAME#$pkg#g" $spec
-        sed -i "s#ROS_PACKAGE_VERSION#$base_version#g" $spec
-        sed -i "s#ROS_PACKAGE_RELEASE#$release_version#g" $spec
-
-
-        debug_log "gen license"
-
-        debug_log "gen url"
-        if [ "$url" = "" ]
-        then
-                sed -i '/ROS_PACKAGE_URL/d' $spec
-        else
-                sed -i "s#ROS_PACKAGE_URL#$url#g" $spec
-        fi
 
 	gen_requires $pkg Requires Requires ROS_PACKAGE_REQUIRES $spec
 	gen_requires $pkg BuildRequires BuildRequires ROS_PACKAGE_BUILDREQUIRES $spec
 	gen_requires $pkg test-BuildRequires BuildRequires ROS_TEST_BUILDREQUIRES $spec
-	replace_key_word ROS_PROVIDES_FIX ${ROOT}/spec_fix/$pkg.Provides $spec
 
 	if [ "$pkg" == "ament-cmake-core" -o "$pkg" == "ament-package" -o "$pkg" == "ros-workspace" ]
 	then
@@ -175,29 +151,6 @@ modify_spec()
                 sed -i "s#ROS_ALL_FIX_REQUIRES##g" $spec
 	fi
 
-        debug_log "gen changelog"
-        #changetime=`date +"%a %b %d %Y"`
-        changetime="Thu May 04 2023"
-        changelog="$changetime $maintainer - $base_version-$release_version"
-        sed -i "s#ROS_PACKAGE_CHANGELOG#$changelog#g" $spec
-
-        debug_log "gen spec ok"
-}
-
-spec_type_fix()
-{
-	pkg=$1
-
-	spec_type=`grep "$pkg " ${ROOT}/spec_fix/spec-type-fix | cut -d' ' -f2`
-	if [ "$spec_type" == "" ]
-	then
-		return
-	fi
-
-	
-	spec_tplt=${spec_type}-ubuntu.spec
-
-	cp ${ROOT}/template/${spec_tplt} $pkg.spec
 }
 
 package_fix()
@@ -249,7 +202,37 @@ gen_license()
 
 	[ "$lic" == "" ] && error_log "can not get license for package $pkg, origin license is \"$license\"" && exit 1
 
+	lic_org=`grep "license" ${ROS_SRC_BASE}/${repo}/${pkg_dir_name}/package.xml`
+	lic_line=`grep -n "license" ${ROS_SRC_BASE}/${repo}/${pkg_dir_name}/package.xml | cut -d':' -f1`
+	lic_md5=`echo "$lic_org" | md5sum | cut -d' ' -f1`
+
 	echo "LICENSE = \"$lic\"" >> $bbfile
+	echo "LIC_FILES_CHKSUM = \"file://package.xml;beginline=${lic_line};endline=${lic_line};md5=${lic_md5}\"" >> $bbfile
+}
+
+gen_src_url()
+{
+	pkg=$1
+	bbfile=$2
+
+	echo "SRC_URI = \" \\" >> $bbfile
+	echo "    file://\${OPENEULER_LOCAL_NAME}/ros-\${ROS_DISTRO}-\${ROS_SPN}_\${PV}.orig.tar.gz \\" >> $bbfile
+	if [ ! -d ${ROS_PACKAGE_FIX}/${pkg} ]
+	then
+		return
+	fi
+
+	for i in `cd ${ROS_PACKAGE_FIX}/${pkg} && ls | grep -v "\.fix"`
+	do
+		echo "    file://${i} \\" >> $bbfile
+	done
+
+	echo "\"" >> $bbfile
+	echo "" >> $bbfile
+}
+
+gen_build_depends()
+{
 }
 
 main()
@@ -322,12 +305,22 @@ main()
 
         		url=`grep url: ${ROS_DEPS_BASE}/$pkg-PackageXml | awk -F"url:" '{print $2}' | sed -n '1p'`
 			echo "HOMEPAGE = \"${url}\"" >> $bbfile
+			echo "" >> $bbfile
+
+			echo "" >> $bbfile
+			echo "" >> $bbfile
+			echo "" >> $bbfile
+			echo "" >> $bbfile
+			echo "" >> $bbfile
+			echo "" >> $bbfile
+			echo "" >> $bbfile
+			echo "" >> $bbfile
+			echo "" >> $bbfile
+			echo "" >> $bbfile
 
 
 			pkg_dir_name=${ROS_SRC_BASE}/${repo}/$pkg_dir_name
 			
-			spec_type_fix $pkg
-
                         modify_spec $pkg $pkg.spec $pkg_dir_name $base_version $release_version
 
 			package_fix $pkg ${ROS_BB_BASE}/${repo}

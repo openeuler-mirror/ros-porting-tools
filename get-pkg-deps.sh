@@ -60,6 +60,38 @@ gen_depend()
 		return 0
 	fi
 
+	case $depend_name in
+	"depend")
+		echo "$depend" >> ${ROS_DEPS_BASE}/$pkg-BuildDepends
+		echo "$depend" >> ${ROS_DEPS_BASE}/$pkg-ExecDepends
+		;;
+	"build_depend")
+		echo "$depend" >> ${ROS_DEPS_BASE}/$pkg-BuildDepends
+		;;
+	"build_export_depend")
+		echo "$depend" >> ${ROS_DEPS_BASE}/$pkg-BuildExportDepends
+		echo "$depend" >> ${ROS_DEPS_BASE}/$pkg-ExecDepends
+		;;
+	"exec_depend")
+		echo "$depend" >> ${ROS_DEPS_BASE}/$pkg-ExecDepends
+		;;
+	"run_depend")
+		echo "$depend" >> ${ROS_DEPS_BASE}/$pkg-ExecDepends
+		;;
+	"test_depend")
+		echo "$depend" >> ${ROS_DEPS_BASE}/$pkg-TestDepends
+		;;
+	"buildtool_depend")
+		echo "$depend" >> ${ROS_DEPS_BASE}/$pkg-BuildToolDepends
+		;;
+	"buildtool_export_depend")
+		echo "$depend" >> ${ROS_DEPS_BASE}/$pkg-BuildToolExportDepends
+		;;
+	"*")
+		error_log "Wrong dep_name $dep_name"
+		;;
+	esac
+
 	for i in $depend
 	do
 		match_ros_pkg=`echo $i | sed "s#_#-#g"`
