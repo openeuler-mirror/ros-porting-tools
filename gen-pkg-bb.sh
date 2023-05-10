@@ -219,7 +219,8 @@ package_fix()
 get_description()
 {
 	pkg=$1
-        desc_wc=`cat ${ROS_DEPS_BASE}/$pkg-PackageXml-description | wc -l`
+        
+	desc_wc=`cat ${ROS_DEPS_BASE}/$pkg-PackageXml-description | wc -l`
         if [ "$desc_wc" = "1" ]
         then
                 desc=`cat ${ROS_DEPS_BASE}/$pkg-PackageXml-description`
@@ -228,15 +229,28 @@ get_description()
                 echo "ROS $pkg package"
         fi
 }
+
+gen_license()
+{
+	pkg=$1
+	bbfile=$2
+
         license_wc=`grep license: ${ROS_DEPS_BASE}/$pkg-PackageXml | awk -F"license:" '{print $2}' | wc -l`
         if [ "$license_wc" = "1" ]
         then
                 license=`grep license: ${ROS_DEPS_BASE}/$pkg-PackageXml | awk -F"license:" '{print $2}'`
-                sed -i "s#ROS_PACKAGE_LICENSE#$license#g" $spec
         else
                 license=`grep license: ${ROS_DEPS_BASE}/$pkg-PackageXml | awk -F"license:" '{print $2}' | sed ":a;N;s/\n/ and /g;ta"`
-                sed -i "s#ROS_PACKAGE_LICENSE#$license#g" $spec
+		error_log $pkg $license
+		exit 1
         fi
+
+	lic=`python3 ${ROOT}/get-license.py "$license"`
+
+	[ "$lic" == "" ] && error_log "can not get license for package $pkg, origin license is \"$license\"" && exit 1
+
+	echo "LICENSE = \"$lic\"" >> $bbfile
+}
 
 main()
 {
@@ -309,7 +323,6 @@ main()
         		url=`grep url: ${ROS_DEPS_BASE}/$pkg-PackageXml | awk -F"url:" '{print $2}' | sed -n '1p'`
 			echo "HOMEPAGE = \"${url}\"" >> $bbfile
 
-			echo "LICENSE = \"`python3 ${ROOT}/get-license.py $`\"" >> $bbfile
 
 			pkg_dir_name=${ROS_SRC_BASE}/${repo}/$pkg_dir_name
 			
