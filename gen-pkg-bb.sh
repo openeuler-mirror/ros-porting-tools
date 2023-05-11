@@ -106,14 +106,14 @@ gen_src_url()
 
 	for tarball in `cd ${ROS_PACKAGE_FIX}/${pkg} && ls | grep -v "\.fix" | grep -v "\.patch"`
 	do
-		echo "    file://${tarball} \\" >> $bbfile
+		echo "    file://\${OPENEULER_LOCAL_NAME}/${tarball} \\" >> $bbfile
 	done
 
 	if [ -f ${ROS_PACKAGE_FIX}/${pkg}/source.fix ]
 	then
-		for patch in `grep "^Patch.*: " ${ROS_PACKAGE_FIX}/${pkg}/source.fix | cut -d':' -f2`
+		for patch in `grep "^Patch.*: " ${ROS_PACKAGE_FIX}/${pkg}/source.fix | awk '{print $2}'`
 		do
-			echo "    file://${patch} \\" >> $bbfile
+			echo "    file://\${OPENEULER_LOCAL_NAME}/${patch} \\" >> $bbfile
 		done
 	fi
 

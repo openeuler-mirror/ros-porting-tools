@@ -1,0 +1,2 @@
+#package_name package_type is_native bbfile_name spec_url source_name
+python3-catkin_pkg python yes python3-catkin-pkg https://gitee.com/will_niutao/catkin_pkg/raw/catkin-pkg.spec 0.5.2.tar.gz
