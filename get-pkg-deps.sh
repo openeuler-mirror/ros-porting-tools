@@ -66,28 +66,62 @@ gen_depend()
 		grep -Pq "^${match_ros_pkg}\t" ${ROS_PKG_LIST}
 		if [ $? -eq 0 ]
 		then
-			dep="ros-%{ros_distro}-${match_ros_pkg}"
+			dep_spec="ros-%{ros_distro}-${match_ros_pkg}"
+			dep_bb="${match_ros_pkg}"
 		else
-			dep=$i
+			dep_spec=$i
+			dep_bb=$i
 			echo "$i" >>${ROS_DEPS_BASE}/$pkg-ExtDeps
 		fi
 
 		case $dep_type in
 		"all")
-			write_dep Requires $dep ${ROS_DEPS_BASE}/$pkg-Requires
-			write_dep BuildRequires $dep ${ROS_DEPS_BASE}/$pkg-BuildRequires
+			write_dep Requires $dep_spec ${ROS_DEPS_BASE}/$pkg-Requires
+			write_dep BuildRequires $dep_spec ${ROS_DEPS_BASE}/$pkg-BuildRequires
 			;;
 		"exec")
-			write_dep Requires $dep ${ROS_DEPS_BASE}/$pkg-Requires
+			write_dep Requires $dep_spec ${ROS_DEPS_BASE}/$pkg-Requires
 			;;
 		"build")
-			write_dep BuildRequires $dep ${ROS_DEPS_BASE}/$pkg-BuildRequires
+			write_dep BuildRequires $dep_spec ${ROS_DEPS_BASE}/$pkg-BuildRequires
 			;;
 		"test")
-			write_dep BuildRequires $dep ${ROS_DEPS_BASE}/$pkg-test-BuildRequires
+			write_dep BuildRequires $dep_spec ${ROS_DEPS_BASE}/$pkg-test-BuildRequires
 			;;
 		"*")
-			error_log "Wrong dep_type $dep_type"
+			error_log "Wrong dep_type $dep_spec_type"
+			;;
+		esac
+
+		case $depend_name in
+		"depend")
+			echo "$dep_bb" >> ${ROS_DEPS_BASE}/$pkg-BuildDepends
+			echo "$dep_bb" >> ${ROS_DEPS_BASE}/$pkg-ExecDepends
+			;;
+		"build_depend")
+			echo "$dep_bb" >> ${ROS_DEPS_BASE}/$pkg-BuildDepends
+			;;
+		"build_export_depend")
+			echo "$dep_bb" >> ${ROS_DEPS_BASE}/$pkg-BuildExportDepends
+			echo "$dep_bb" >> ${ROS_DEPS_BASE}/$pkg-ExecDepends
+			;;
+		"exec_depend")
+			echo "$dep_bb" >> ${ROS_DEPS_BASE}/$pkg-ExecDepends
+			;;
+		"run_depend")
+			echo "$dep_bb" >> ${ROS_DEPS_BASE}/$pkg-ExecDepends
+			;;
+		"test_depend")
+			echo "$dep_bb" >> ${ROS_DEPS_BASE}/$pkg-TestDepends
+			;;
+		"buildtool_depend")
+			echo "$dep_bb" >> ${ROS_DEPS_BASE}/$pkg-BuildToolDepends
+			;;
+		"buildtool_export_depend")
+			echo "$dep_bb" >> ${ROS_DEPS_BASE}/$pkg-BuildToolExportDepends
+			;;
+		"*")
+			error_log "Wrong dep_name $dep_name"
 			;;
 		esac
 	done
@@ -127,6 +161,7 @@ main()
 		gen_depend $pkg $path build_depend build
 		gen_depend $pkg $path build_export_depend exec
 		gen_depend $pkg $path exec_depend exec
+		gen_depend $pkg $path run_depend exec
 		gen_depend $pkg $path test_depend test
 		gen_depend $pkg $path buildtool_depend build
 		gen_depend $pkg $path buildtool_export_depend exec

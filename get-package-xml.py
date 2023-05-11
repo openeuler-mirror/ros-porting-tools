@@ -44,6 +44,7 @@ def get_depend(depend_name, org_depend_file_name):
 
     f.close()
 
+get_depend("name", sys.argv[1])
 get_depend("depend", sys.argv[1])
 get_depend("build_depend", sys.argv[1])
 get_depend("build_export_depend", sys.argv[1])
@@ -51,6 +52,7 @@ get_depend("exec_depend", sys.argv[1])
 get_depend("test_depend", sys.argv[1])
 get_depend("buildtool_depend", sys.argv[1])
 get_depend("buildtool_export_depend", sys.argv[1])
+get_depend("run_depend", sys.argv[1])
 get_depend("license", sys.argv[1])
 get_depend("url", sys.argv[1])
 get_depend("maintainer", sys.argv[1])
