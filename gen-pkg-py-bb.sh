@@ -35,12 +35,26 @@ gen_single_line_config()
 	prefix=$3
 	config_key=$4
 
-	ret=`grep -i "^${prefix}" $spec | head -1`
+	ret=`grep -i "^${prefix}" $spec | head -1 | awk -F"${prefix}" '{print $2}' | awk '$1=$1'`
 	if [ "$ret" == "" ]
 	then
 		error_log "${config_key} is null."
 	fi
 	echo "${config_key} = \"$ret\"" >> $bbfile
+}
+
+gen_license()
+{
+	spec=$1
+	bbfile=$2
+
+	ret=`grep -i "^License:" $spec | head -1 | awk -F":" '{print $2}' | awk '$1=$1' | sed -e 's#and#\&#g'`
+	if [ "$ret" == "" ]
+	then
+		error_log "license is null."
+	fi
+	echo "LICENSE = \"$ret\"" >> $bbfile
+	echo "LIC_FILES_CHKSUM = \"\"" >> $bbfile
 }
 main()
 {
@@ -50,7 +64,7 @@ main()
 
 	while read package_name package_type is_native bbfile_name spec_url source_name
         do
-		grep -q "^#" ${package_type} && continue
+		echo "${package_name}" | grep -q "^#" && continue
 		[ "$GEN_ONE" != "" -a "$package_name" != "$GEN_ONE" ] && continue
 
 		if [ "${package_name}" == "" -o "${package_type}" == "" -o  "${is_native}" == "" -o  "${bbfile_name}" == "" -o  "${spec_url}" == "" ]
@@ -77,7 +91,7 @@ main()
 		spec_name=`echo $spec_url | cut -d'/' -f8`
 		branch=`echo $spec_url | cut -d'/' -f7`
 		repo=`echo $spec_url | cut -d'/' -f5`
-		git_url=`echo $spec_url | awk -F'/' '${print $1"//"$2"/"$3"/"$4}'`
+		git_url=`echo $spec_url | awk -F'/' '{print $1"//"$2"/"$3"/"$4}'`
 		spec=${BB_TMP_BASE}/$spec_name
 		
 		if [ ! -f $spec ]
@@ -86,18 +100,17 @@ main()
 			continue
 		fi
 
-		echo "PN = \"${package_name}\"" >> $bbfile
+		echo "PN = \"${package_name}\"" > $bbfile
 
 		gen_single_line_config $spec $bbfile "Summary:" "DESCRIPTION"
 		gen_single_line_config $spec $bbfile "URL:" "HOMEPAGE"
-		gen_single_line_config $spec $bbfile "License:" "LICENSE"
-		echo "LIC_FILES_CHKSUM = \"\"" >> $bbfile
+		gen_license $spec $bbfile
 		gen_single_line_config $spec $bbfile "Version:" "PV"
 		echo "" >> $bbfile
 
+		echo "inherit pypi setuptools3" >> $bbfile
 		if [ "$package_type" == "" ]
 		then
-			echo "inherit pypi setuptools3" >> $bbfile
 			echo "" >> $bbfile
 			echo "PYPI_PACKAGE = \"${package_name}\"" >> $bbfile
 			echo "" >> $bbfile
@@ -107,7 +120,7 @@ main()
 		echo "OPENEULER_REPO_NAME = \"${repo}\"" >> $bbfile
 		echo 'OPENEULER_LOCAL_NAME = "${OPENEULER_REPO_NAME}"' >> $bbfile
 		echo "OPENEULER_BRANCH = \"${branch}\"" >> $bbfile
-		echo " >> $bbfile
+		echo "" >> $bbfile
 
 		echo "SRC_URI = \" \\" >> $bbfile
 		if [ "$source_name" == "" ]
@@ -116,7 +129,7 @@ main()
 		else
 			src_name=$source_name
 		fi
-		echo "    file://${OPENEULER_LOCAL_NAME}/${src_name} \\" >> $bbfile
+		echo "    file://\${OPENEULER_LOCAL_NAME}/${src_name} \\" >> $bbfile
 
 		for patch in `grep "^Patch.*: " $spec | awk '{print $2}'`
 		do
@@ -124,22 +137,24 @@ main()
 		done
 
 		echo "\"" >> $bbfile
-		echo "S = \"${WORKDIR}/${PN}-${PV}\"" >> $bbfile
+		echo 'S = "${WORKDIR}/${PN}-${PV}"' >> $bbfile
 		echo "" >> $bbfile
 
 		echo "DEPENDS += \" \\" >> $bbfile
-		grep "^BuildRequires:" $spec | awk '{print $2}' | sed -e 's#$#-native \\#g' >> $bbfile
+		grep "^BuildRequires:" $spec | awk '{print $2}' | sed -e 's#$#-native \\#g' -e 's#^#    #g' >> $bbfile
 		echo "\"" >> $bbfile
 		echo "" >> $bbfile
 
 		echo "RDEPENDS_\${PN} += \" \\" >> $bbfile
-		grep "^Requires:" $spec | awk '{print $2}' | sed -e 's#$#-native \\#g' >> $bbfile
+		grep "^Requires:" $spec | awk '{print $2}' | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
 		echo "\"" >> $bbfile
 		echo "" >> $bbfile
 
 		if [ "$is_native" == "yes" ]
 		then
 			echo "BBCLASSEXTEND = \"native nativesdk\"" >> $bbfile
+		else
+			echo "BBCLASSEXTEND = \"native\"" >> $bbfile
 		fi
         done < ${SPEC_TO_BB_LIST}
 

@@ -1,2 +1,4 @@
 #package_name package_type is_native bbfile_name spec_url source_name
-python3-catkin_pkg python yes python3-catkin-pkg https://gitee.com/will_niutao/catkin_pkg/raw/catkin-pkg.spec 0.5.2.tar.gz
+python3-importlib-resources python yes python3-importlib-resources https://gitee.com/src-openeuler/python-importlib-resources/raw/openEuler-22.03-LTS-SP1/python-importlib-resources.spec import_resources-5.4.0.tar.gz
+python3-catkin_pkg python yes python3-catkin-pkg https://gitee.com/will_niutao/catkin_pkg/raw/master/catkin-pkg.spec 0.5.2.tar.gz
+python3-sphinx python no python3-sphinx https://gitee.com/src-openeuler/python-sphinx/raw/openEuler-22.03-LTS-SP1/python-sphinx.spec Sphinx-4.4.0.tar.gz
