@@ -107,3 +107,4 @@ libjsoncpp-dev jsoncpp-devel
 python3-pil python3-pillow
 libomp-dev libomp-devel
 libglew-dev glew-devel
+glut freeglut
