@@ -1,11 +1,10 @@
-diff -Naur ros-humble-pick-ik-1.0.0_org/tests/CMakeLists.txt ros-humble-pick-ik-1.0.0/tests/CMakeLists.txt
---- ros-humble-pick-ik-1.0.0_org/tests/CMakeLists.txt	2023-05-08 19:56:51.791390734 +0800
-+++ ros-humble-pick-ik-1.0.0/tests/CMakeLists.txt	2023-05-08 20:01:35.391545184 +0800
+--- ros-humble-pick-ik-1.0.1_org/tests/CMakeLists.txt	2023-05-11 17:43:27.366923785 +0800
++++ ros-humble-pick-ik-1.0.1/tests/CMakeLists.txt	2023-05-11 17:44:51.517452612 +0800
 @@ -1,7 +1,8 @@
 -list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
--
- find_package(Catch2 3.1.0 REQUIRED)
  
+ find_package(Catch2 3.3.0 REQUIRED)
+-
 +if (NOT Catch2_FOUND)
 +	list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 +endif()

@@ -1,19 +1,18 @@
-diff -Naur ros-humble-rsl-0.2.1_org/tests/CMakeLists.txt ros-humble-rsl-0.2.1/tests/CMakeLists.txt
---- ros-humble-rsl-0.2.1_org/tests/CMakeLists.txt	2023-05-07 11:53:18.215360070 +0800
-+++ ros-humble-rsl-0.2.1/tests/CMakeLists.txt	2023-05-07 11:59:24.986324119 +0800
-@@ -1,7 +1,8 @@
+diff -Naur ros-humble-rsl-0.2.2_org/tests/CMakeLists.txt ros-humble-rsl-0.2.2/tests/CMakeLists.txt
+--- ros-humble-rsl-0.2.2_org/tests/CMakeLists.txt	2023-05-11 17:36:22.490110840 +0800
++++ ros-humble-rsl-0.2.2/tests/CMakeLists.txt	2023-05-11 17:38:07.594806701 +0800
+@@ -1,6 +1,9 @@
 -list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
--
--find_package(Catch2 3.2.0 REQUIRED)
- find_package(range-v3 REQUIRED)
-+find_package(Catch2 3.2.0 REQUIRED)
+ 
+ find_package(Catch2 3.3.0 REQUIRED)
 +if (NOT Catch2_FOUND)
 +	list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 +endif()
++
+ find_package(range-v3 REQUIRED)
  
  add_executable(test-rsl
-     algorithm.cpp
-@@ -19,4 +20,5 @@
+@@ -19,4 +22,5 @@
      Catch2::Catch2WithMain
      range-v3::range-v3
  )
