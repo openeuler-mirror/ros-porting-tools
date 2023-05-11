@@ -93,7 +93,7 @@ gen_depend()
 			;;
 		esac
 
-		case $dep_bbend_name in
+		case $depend_name in
 		"depend")
 			echo "$dep_bb" >> ${ROS_DEPS_BASE}/$pkg-BuildDepends
 			echo "$dep_bb" >> ${ROS_DEPS_BASE}/$pkg-ExecDepends

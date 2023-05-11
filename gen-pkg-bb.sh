@@ -57,26 +57,29 @@ gen_license()
 	pkg_dir=$2
 	bbfile=$3
 
-        license_wc=`grep license: ${ROS_DEPS_BASE}/$pkg-PackageXml | awk -F"license:" '{print $2}' | wc -l`
-        if [ "$license_wc" = "1" ]
-        then
-                license=`grep license: ${ROS_DEPS_BASE}/$pkg-PackageXml | awk -F"license:" '{print $2}'`
-        else
-                license=`grep license: ${ROS_DEPS_BASE}/$pkg-PackageXml | awk -F"license:" '{print $2}' | sed ":a;N;s/\n/ and /g;ta"`
-		error_log $pkg $license
-		exit 1
-        fi
+	lics=""
+	grep license: ${ROS_DEPS_BASE}/$pkg-PackageXml | awk -F"license:" '{print $2}' >${OUTPUT}/.tempLicense
+	while read lic
+	do
+		yocto_lic=`python3 ${ROOT}/get-license.py "$lic"`
+		[ "$yocto_lic" == "" ] && error_log "can not get license for package $pkg, origin license is \"$lic\"" && exit 1
 
-	lic=`python3 ${ROOT}/get-license.py "$license"`
-
-	[ "$lic" == "" ] && error_log "can not get license for package $pkg, origin license is \"$license\"" && exit 1
+		if [ "$lics" == "" ]
+		then
+			lics="$yocto_lic"
+		else
+			lics="$lics & $yocto_lic"
+		fi
+	done < ${OUTPUT}/.tempLicense
 
 	lic_org=`grep "license" ${pkg_dir}/package.xml`
-	lic_line=`grep -n "license" ${pkg_dir}/package.xml | cut -d':' -f1`
+	lic_beginline=`grep -n "license" ${pkg_dir}/package.xml | head -1 | cut -d':' -f1`
+	lic_endline=`grep -n "license" ${pkg_dir}/package.xml | tail -1 | cut -d':' -f1`
 	lic_md5=`echo "$lic_org" | md5sum | cut -d' ' -f1`
 
-	echo "LICENSE = \"$lic\"" >> $bbfile
-	echo "LIC_FILES_CHKSUM = \"file://package.xml;beginline=${lic_line};endline=${lic_line};md5=${lic_md5}\"" >> $bbfile
+	echo "LICENSE = \"$lics\"" >> $bbfile
+	echo "LIC_FILES_CHKSUM = \"file://package.xml;beginline=${lic_beginline};endline=${lic_endline};md5=${lic_md5}\"" >> $bbfile
+	echo "" >> $bbfile
 }
 
 gen_src_url()
@@ -88,10 +91,12 @@ gen_src_url()
 	echo "    file://\${OPENEULER_LOCAL_NAME}/ros-\${ROS_DISTRO}-\${ROS_SPN}_\${PV}.orig.tar.gz \\" >> $bbfile
 	if [ ! -d ${ROS_PACKAGE_FIX}/${pkg} ]
 	then
+		echo "\"" >> $bbfile
+		echo "" >> $bbfile
 		return
 	fi
 
-	for tarball in `cd ${ROS_PACKAGE_FIX}/${pkg} && ls | grep -v "\.fix"` | grep -v "\.patch"`
+	for tarball in `cd ${ROS_PACKAGE_FIX}/${pkg} && ls | grep -v "\.fix" | grep -v "\.patch"`
 	do
 		echo "    file://${tarball} \\" >> $bbfile
 	done
@@ -163,7 +168,7 @@ gen_each_depend()
 
         if [ ! -f ${require_file} ]
         then
-		echo "$depend_name = \"" >> $bbfile
+		echo "$depend_name = \" \\" >> $bbfile
 		echo "\"" >> $bbfile
 		echo "" >> $bbfile
 		return
@@ -183,9 +188,9 @@ gen_each_depend()
 
 	if [ "$depend_name" == "ROS_BUILDTOOL_DEPENDS" -o "$depend_name" == "ROS_BUILDTOOL_EXPORT_DEPENDS" ]
 	then
-		cat $require_file | sed -e "s#$#-native \\#g" -e "s#^#    #g" >> $bbfile
+		cat $require_file | sed -e 's#$#-native \\#g' -e 's#^#    #g' >> $bbfile
 	else
-		cat $require_file | sed -e "s#^#    #g" >> $bbfile
+		cat $require_file | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
 	fi
 
 	echo "\"" >> $bbfile
@@ -234,7 +239,7 @@ main()
 
         for repo in `cat ${ROS_PKG_LIST} | awk '{print $2}' | sort | uniq`
         do
-		[ "$GEN_ONE" == "" ] && info_log "start to gen $repo"
+		[ "$GEN_ONE" == "" ] && info_log "start to generate bbfile for repository $repo"
 
                 mkdir -p ${ROS_BB_BASE}/${repo}/
                 cd ${ROS_BB_BASE}/${repo}/
@@ -255,6 +260,8 @@ main()
                                 exit 1
                         fi
 
+			info_log "generate bbfile for package $pkg"
+
                         base_version=`echo $version | awk -F"-" '{print $1}'`
                         release_version=`echo $version | awk -F"-" '{print $2}'`
 
@@ -268,7 +275,7 @@ main()
 			echo "" >> $bbfile
 
 			echo "# repository name" >> $bbfile
-			echo "ROS_CN  = \"${repo}\""
+			echo "ROS_CN  = \"${repo}\"" >> $bbfile
 
 			bpn=`grep "name:" ${ROS_DEPS_BASE}/$pkg-PackageXml | cut -d':' -f2`
 			echo "# package name in package.xml" >> $bbfile
@@ -289,6 +296,7 @@ main()
 			echo "AUTHOR = \"${maintainer}\"" >> $bbfile
 
         		url=`grep url: ${ROS_DEPS_BASE}/$pkg-PackageXml | awk -F"url:" '{print $2}' | sed -n '1p'`
+			[ "$url" == "" ] && url="https://wiki.ros.org"
 			echo "HOMEPAGE = \"${url}\"" >> $bbfile
 			echo "" >> $bbfile
 
