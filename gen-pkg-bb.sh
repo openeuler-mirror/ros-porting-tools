@@ -4,6 +4,8 @@
 
 GEN_ONE=$1
 
+BB_FIX=${ROOT}/bb_fix
+BB_FIX_PKG_REMAP=${BB_FIX}/pkg.remap
 ROS_PKG_SRC=${OUTPUT}/ros-pkg-src.list
 ROS_PACKAGE_FIX=${ROOT}/package_fix
 ROS_PKG_REMAP=${ROOT}/spec_fix/pkg.remap
@@ -117,10 +119,24 @@ gen_src_url()
 		done
 	fi
 
+	[ ! -d ${BB_FIX}/$pkg ] && echo "\"" >> $bbfile && return
+
+	pkg_bb_dir=`dirname "$bbfile"`
+
+	cp ${BB_FIX}/$pkg/* ${pkg_bb_dir}
+
+	for patch in `cd ${BB_FIX}/$pkg/files 2>/dev/null && ls *.patch`
+	do
+		echo "    file://${patch} \\" >> $bbfile
+	done
+
 	echo "\"" >> $bbfile
 	echo "" >> $bbfile
 }
 
+# rename the ros origin dependence package name(same this ubuntu) to openEuler,
+# such as in ubuntu system, the develop package name of assimp is assimp-dev,
+# but in openEuler system, the name is assimp-devel.
 rename_requires()
 {
 	require_file=$1
@@ -131,6 +147,19 @@ rename_requires()
 	done <${ROS_PKG_REMAP}
 }
 
+# rename the openEuler rpm package name to openEuler embedded package name,
+# such as in openEuler Server system, the name of python package setuptools_scm is 
+# python3-setuptools_scm, but in openEuler embedded system, the name is 
+# python3-setuptools-scm(bcauses the bbfile name use _ to split package name and version).
+rename_depend()
+{
+	require_file=$1
+
+	while read rpm_pkg bb_pkg
+	do
+		sed -i "s#^${rpm_pkg}\$#${bb_pkg}#g" $require_file
+	done <${BB_FIX_PKG_REMAP}
+}
 spec_fix()
 {
 	pkg=$1
@@ -155,55 +184,75 @@ spec_fix()
 	grep "^\+" $spec_fix_file | sed -e "s#^\+##g" >> ${require_file}
 }
 
+# fix DEPENDS and RDEPENDS
+bb_fix()
+{
+	require_file=$1
+	bb_deps_suffix=$2
+
+	[ ! -f ${BB_FIX}/${bbfile_name}.${bb_deps_suffix} ] && return
+
+	for dep in `grep "^\-" ${BB_FIX}/${bbfile_name}.${bb_deps_suffix} | sed -e 's#^\-##g'`
+	do
+		sed -i "/^${dep}\$/d" $require_file
+	done
+
+	for dep in `grep "^\+" ${BB_FIX}/${bbfile_name}.${bb_deps_suffix} | sed -e 's#^\+##g'`
+	do
+		echo "$dep" >> $require_file
+	done
+}
+
 
 gen_each_depend()
 {
 	pkg=$1
-	depend_name=$2
-	deps_suffix=$3
-	spec_fix_type=$4
-	bbfile=$5
+	bb_deps_suffix=$2
+	spec_deps_suffix=$3
+	bbfile=$4
 
-        debug_log "gen ${depend_name}"
+        debug_log "gen ${bb_deps_suffix}"
 
-	package_xml_deps=${ROS_DEPS_BASE}/$pkg-${deps_suffix}
+	package_xml_deps=${ROS_DEPS_BASE}/$pkg-${spec_deps_suffix}
 	require_file=${OUTPUT}/.tempDepends
 
 	rm -f ${require_file}
 
-	[ -f ${package_xml_deps} ] && cp ${package_xml_deps} ${require_file}
-	spec_fix $pkg $spec_fix_type $require_file
-
-        if [ ! -f ${require_file} ]
-        then
-		echo "$depend_name = \" \\" >> $bbfile
-		echo "\"" >> $bbfile
-		echo "" >> $bbfile
-		return
-	fi
-	
-	rename_requires $require_file
-
-	echo "$depend_name = \" \\" >> $bbfile
-
-	if [ "$pkg" != "ament-cmake-core" -a "$pkg" != "ament-package" -a "$pkg" != "ros-workspace" ]
+	if [ -f ${package_xml_deps} ]
 	then
-		if [ "$depend_name" == "ROS_BUILD_DEPENDS" -o "$depend_name" == "ROS_EXEC_DEPENDS" ]
+		if [ "$bb_deps_suffix" == "TDepends" ]
 		then
-			echo "ros-workspace" >> $require_file
+			cat ${package_xml_deps} | sed -e "s#^BuildRequires: ##g" > ${require_file}
+		else
+			cat ${package_xml_deps} | sed -e "s#^${spec_deps_suffix}: ##g" > ${require_file}
 		fi
 	fi
 
-	if [ "$depend_name" == "ROS_BUILDTOOL_DEPENDS" -o "$depend_name" == "ROS_BUILDTOOL_EXPORT_DEPENDS" ]
-	then
-		cat $require_file >> ${ROS_NATIVE_PKGS_TMP1}
-		cat $require_file | sed -e 's#$#-native \\#g' -e 's#^#    #g' >> $bbfile
-	else
-		cat $require_file | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
+	spec_fix $pkg $spec_deps_suffix $require_file
+
+        if [ ! -f ${require_file} ]
+        then
+		return
 	fi
 
-	echo "\"" >> $bbfile
-	echo "" >> $bbfile
+	sed -i 's#ros-%{ros_distro}-##g' $require_file
+	
+	if [ "$pkg" != "ament-cmake-core" -a "$pkg" != "ament-package" -a "$pkg" != "ros-workspace" ]
+	then
+		echo "ros-workspace" >> $require_file
+	fi
+
+	rename_requires $require_file
+	rename_depend $require_file
+	bb_fix $require_file $bb_deps_suffix
+
+	if [ "$bb_deps_suffix" == "Depends" ]
+	then
+		cat $require_file >> ${ROS_NATIVE_PKGS_TMP1}
+		cat $require_file | sed -e 's#-devel$##g' -e 's#$#-native \\#g' -e 's#^#    #g' >> $bbfile
+	else
+		cat $require_file | sed -e 's#-devel$##g' -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
+	fi
 }
 
 gen_depends()
@@ -211,18 +260,23 @@ gen_depends()
 	pkg=$1
 	bbfile=$2
 
-	gen_each_depend $pkg ROS_BUILD_DEPENDS BuildDepends BuildRequires $bbfile
-	gen_each_depend $pkg ROS_BUILD_EXPORT_DEPENDS BuildExportDepends BuildRequires $bbfile
-	gen_each_depend $pkg ROS_BUILDTOOL_DEPENDS BuildToolDepends BuildRequires $bbfile
-	gen_each_depend $pkg ROS_BUILDTOOL_EXPORT_DEPENDS BuildToolExportDepends BuildRequires $bbfile
-	gen_each_depend $pkg ROS_EXEC_DEPENDS ExecDepends Requires $bbfile
-	gen_each_depend $pkg ROS_TEST_DEPENDS TestDepends test-BuildRequires $bbfile
+	echo 'DEPENDS = "\' >> $bbfile
+	gen_each_depend $pkg Depends BuildRequires $bbfile
+	echo '"' >> $bbfile
+	echo "" >> $bbfile
 
-	echo 'DEPENDS  = "${ROS_BUILD_DEPENDS} ${ROS_BUILD_EXPORT_DEPENDS}"' >> $bbfile
-	echo 'DEPENDS += "${ROS_BUILDTOOL_DEPENDS} ${ROS_BUILDTOOL_EXPORT_DEPENDS}"' >> $bbfile
-	echo 'RDEPENDS:${PN} += "${ROS_EXEC_DEPENDS}"' >> $bbfile
+	echo 'RDEPENDS:${PN} += "\' >> $bbfile
+	gen_each_depend $pkg RDepends Requires $bbfile
+	echo '"' >> $bbfile
+	echo "" >> $bbfile
+
+	echo 'TEST_DEPENDS = "\' >> $bbfile
+	gen_each_depend $pkg TDepends test-BuildRequires $bbfile
+	echo '"' >> $bbfile
+
 	echo "" >> $bbfile
 }
+
 
 gen_build_type()
 {

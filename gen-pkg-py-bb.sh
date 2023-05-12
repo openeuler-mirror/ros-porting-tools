@@ -5,6 +5,8 @@
 GEN_ONE=$1
 
 SPEC_TO_BB_LIST=${ROS_DISTRO}/spec_to_bb.list
+BB_FIX=${ROOT}/bb_fix
+BB_FIX_PKG_REMAP=${BB_FIX}/pkg.remap
 BB_DEVTOOLS_BASE=${ROS_BB_BASE}/recipes-devtools
 BB_EXTERNAL_BASE=${ROS_BB_BASE}/recipes-external
 BB_TMP_BASE=${ROS_BB_BASE}/.tmp
@@ -43,31 +45,144 @@ gen_single_line_config()
 	echo "${config_key} = \"$ret\"" >> $bbfile
 }
 
+gen_src_uri()
+{
+	spec=$1
+	bbfile=$2
+	src_name=$3
+	package_name=$4
+
+	echo "SRC_URI = \" \\" >> $bbfile
+	echo "    file://\${OPENEULER_LOCAL_NAME}/${src_name} \\" >> $bbfile
+
+	for patch in `grep "^Patch.*: " $spec | awk '{print $2}'`
+	do
+		echo "    file://\${OPENEULER_LOCAL_NAME}/${patch} \\" >> $bbfile
+	done
+
+	[ ! -d ${BB_FIX}/$package_name ] && echo "\"" >> $bbfile && return
+
+	pkg_bb_dir=`dirname "$bbfile"`
+
+	cp ${BB_FIX}/$package_name/* ${pkg_bb_dir}/
+
+	for patch in `cd ${BB_FIX}/$package_name/files 2>/dev/null && ls *.patch`
+	do
+		echo "    file://${patch} \\" >> $bbfile
+	done
+
+	echo "\"" >> $bbfile
+}
+
 gen_license()
 {
 	spec=$1
 	bbfile=$2
+	spec_name=$3
 
-	ret=`grep -i "^License:" $spec | head -1 | awk -F":" '{print $2}' | awk '$1=$1' | sed -e 's#and#\&#g'`
-	if [ "$ret" == "" ]
+	grep -i "^License:" $spec | head -1 | awk -F":" '{print $2}' | awk '$1=$1' | sed -e "s# and #\n#g" > ${OUTPUT}/.tempLicense
+	lics=""
+	while read lic
+	do
+		yocto_lic=`python3 ${ROOT}/get-license.py "$lic"`
+		[ "$yocto_lic" == "" ] && error_log "can not get license, origin license is \"$lic\"" && exit 1
+
+		if [ "$lics" == "" ]
+		then
+			lics="$yocto_lic"
+		else
+			lics="$lics & $yocto_lic"
+		fi
+	done < ${OUTPUT}/.tempLicense
+
+	if [ "$lics" == "" ]
 	then
 		error_log "license is null."
 	fi
-	echo "LICENSE = \"$ret\"" >> $bbfile
-	echo "LIC_FILES_CHKSUM = \"\"" >> $bbfile
+
+	echo "LICENSE = \"$lics\"" >> $bbfile
+	
+	#md5=`md5sum $spec | cut -d' ' -f1`
+	#echo "LIC_FILES_CHKSUM = \"file://../${spec_name};md5=${md5}\"" >> $bbfile
+	echo "LIC_FILES_CHKSUM = \"file://\${COMMON_LICENSE_DIR}/Apache-2.0;md5=89aea4e17d99a7cacdbeed46a0096b10\"" >> $bbfile
 }
+
+rename_depend()
+{
+	dep=$1
+
+	grep -q "^$dep " ${BB_FIX_PKG_REMAP}
+	if [ $? -ne 0 ]
+	then
+	       	echo "$dep"
+		return
+	fi
+
+	grep "^$dep " ${BB_FIX_PKG_REMAP} | cut -d' ' -f2
+}
+
+is_delete_depends()
+{
+	dep=$1
+	bbfile_name=$2
+	suffix=$3
+
+	[ ! -f ${BB_FIX}/${bbfile_name}.${suffix} ] && return 1
+
+	grep -q "^\-${dep}$" ${BB_FIX}/${bbfile_name}.${suffix} && return 0
+
+	return 1
+}
+
+gen_depends()
+{
+	spec=$1
+	bbfile=$2
+	bbfile_name=$3
+
+	echo "DEPENDS += \" \\" >> $bbfile
+	for dep in `grep "^BuildRequires:" $spec | awk '{print $2}' | sed -e 's#-devel##g'`
+	do
+		is_delete_depends $dep $bbfile_name Depends && continue
+
+		dep_new=`rename_depend $dep`
+		echo $dep_new | sed -e 's#$#-native \\#g' -e 's#^#    #g' >> $bbfile
+	done
+	echo "\"" >> $bbfile
+	echo "" >> $bbfile
+}
+
+gen_rdepends()
+{
+	spec=$1
+	bbfile=$2
+	bbfile_name=$3
+
+	echo "RDEPENDS_\${PN} += \" \\" >> $bbfile
+	for dep in `grep "^Requires:" $spec | awk '{print $2}' | sed -e 's#-devel##g'`
+	do
+		is_delete_depends $dep $bbfile_name RDepends && continue
+
+		dep_new=`rename_depend $dep`
+		echo $dep_new | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
+	done
+
+	echo "\"" >> $bbfile
+	echo "" >> $bbfile
+}
+
 main()
 {
         prepare
 
         info_log "Start to generate bb file."
 
-	while read package_name package_type is_native bbfile_name spec_url source_name
+	while read package_name package_type is_native bbfile_name spec_url source_name unpack_name
         do
 		echo "${package_name}" | grep -q "^#" && continue
 		[ "$GEN_ONE" != "" -a "$package_name" != "$GEN_ONE" ] && continue
 
-		if [ "${package_name}" == "" -o "${package_type}" == "" -o  "${is_native}" == "" -o  "${bbfile_name}" == "" -o  "${spec_url}" == "" ]
+		if [ "${package_name}" == "" -o "${package_type}" == "" -o  "${is_native}" == "" -o  "${bbfile_name}" == "" -o  "${spec_url}" == "" -o  "${source_name}" == "" -o  "${unpack_name}" == "" ]
 		then
 			error_log "configuration of $package_name is incomplete."
 			continue
@@ -77,15 +192,19 @@ main()
 
 		if [ "$is_native" == "yes" -a "$package_type" == "python" ]
 		then
-			bbfile=${BB_DEVTOOLS_BASE}/python/${bbfile_name}.bb
+			bbfile_prefix=${BB_DEVTOOLS_BASE}/python
 		elif [ "$is_native" == "yes" -a "$package_type" == "cmake" ]
 		then
-			bbfile=${BB_DEVTOOLS_BASE}/${bbfile_name}.bb
+			bbfile_prefix=${BB_DEVTOOLS_BASE}
 		else
-			bbfile=${BB_EXTERNAL_BASE}/${bbfile_name}.bb
+			bbfile_prefix=${BB_EXTERNAL_BASE}
 		fi
 
-	        wget --no-check-certificate -q --show-progress --progress=bar:force 2>&1 -c -P ${BB_TMP_BASE} ${spec_url}
+		[ -d ${BB_FIX}/$package_name ] && bbfile_prefix="$bbfile_prefix/$package_name"
+
+		mkdir -p ${bbfile_prefix}
+
+		bbfile=${bbfile_prefix}/${bbfile_name}.bb
 
 		#the format of spec_url must be like https://gitee.com/src-openeuler/catkin_pkg/raw/master/catkin-pkg.spec
 		spec_name=`echo $spec_url | cut -d'/' -f8`
@@ -94,6 +213,8 @@ main()
 		git_url=`echo $spec_url | awk -F'/' '{print $1"//"$2"/"$3"/"$4}'`
 		spec=${BB_TMP_BASE}/$spec_name
 		
+		[ ! -f $spec ] && wget --no-check-certificate -q --show-progress --progress=bar:force 2>&1 -c -P ${BB_TMP_BASE} ${spec_url}
+
 		if [ ! -f $spec ]
 		then
 			error_log "download spec error, $spec_url"
@@ -104,13 +225,13 @@ main()
 
 		gen_single_line_config $spec $bbfile "Summary:" "DESCRIPTION"
 		gen_single_line_config $spec $bbfile "URL:" "HOMEPAGE"
-		gen_license $spec $bbfile
+		gen_license $spec $bbfile $spec_name
 		gen_single_line_config $spec $bbfile "Version:" "PV"
 		echo "" >> $bbfile
 
-		echo "inherit pypi setuptools3" >> $bbfile
-		if [ "$package_type" == "" ]
+		if [ "$package_type" == "python" ]
 		then
+			echo "inherit pypi setuptools3" >> $bbfile
 			echo "" >> $bbfile
 			echo "PYPI_PACKAGE = \"${package_name}\"" >> $bbfile
 			echo "" >> $bbfile
@@ -122,33 +243,12 @@ main()
 		echo "OPENEULER_BRANCH = \"${branch}\"" >> $bbfile
 		echo "" >> $bbfile
 
-		echo "SRC_URI = \" \\" >> $bbfile
-		if [ "$source_name" == "" ]
-		then
-			src_name=`grep "Source0:" $spec | head -1 | awk '{print $2}'`
-		else
-			src_name=$source_name
-		fi
-		echo "    file://\${OPENEULER_LOCAL_NAME}/${src_name} \\" >> $bbfile
-
-		for patch in `grep "^Patch.*: " $spec | awk '{print $2}'`
-		do
-			echo "    file://\${OPENEULER_LOCAL_NAME}/${patch} \\" >> $bbfile
-		done
-
-		echo "\"" >> $bbfile
-		echo 'S = "${WORKDIR}/${PN}-${PV}"' >> $bbfile
+		gen_src_uri $spec $bbfile $source_name $package_name
+		echo "S = \"\${WORKDIR}/${unpack_name}\"" >> $bbfile
 		echo "" >> $bbfile
 
-		echo "DEPENDS += \" \\" >> $bbfile
-		grep "^BuildRequires:" $spec | awk '{print $2}' | sed -e 's#$#-native \\#g' -e 's#^#    #g' >> $bbfile
-		echo "\"" >> $bbfile
-		echo "" >> $bbfile
-
-		echo "RDEPENDS_\${PN} += \" \\" >> $bbfile
-		grep "^Requires:" $spec | awk '{print $2}' | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
-		echo "\"" >> $bbfile
-		echo "" >> $bbfile
+		gen_depends $spec $bbfile $bbfile_name
+		gen_rdepends $spec $bbfile $bbfile_name
 
 		if [ "$is_native" == "yes" ]
 		then

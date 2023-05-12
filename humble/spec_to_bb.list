@@ -1,4 +1,8 @@
-#package_name package_type is_native bbfile_name spec_url source_name
-python3-importlib-resources python yes python3-importlib-resources https://gitee.com/src-openeuler/python-importlib-resources/raw/openEuler-22.03-LTS-SP1/python-importlib-resources.spec import_resources-5.4.0.tar.gz
-python3-catkin_pkg python yes python3-catkin-pkg https://gitee.com/will_niutao/catkin_pkg/raw/master/catkin-pkg.spec 0.5.2.tar.gz
-python3-sphinx python no python3-sphinx https://gitee.com/src-openeuler/python-sphinx/raw/openEuler-22.03-LTS-SP1/python-sphinx.spec Sphinx-4.4.0.tar.gz
+#package_name package_type is_native bbfile_name spec_url source_name unpack_name
+python3-importlib-resources python yes python3-importlib-resources https://gitee.com/src-openeuler/python-importlib-resources/raw/openEuler-22.03-LTS-SP1/python-importlib-resources.spec importlib_resources-5.4.0.tar.gz importlib_resources-5.4.0
+python3-catkin_pkg python yes python3-catkin-pkg https://gitee.com/will_niutao/catkin_pkg/raw/master/catkin-pkg.spec 0.5.2.tar.gz catkin_pkg-0.5.2
+python3-sphinx python no python3-sphinx https://gitee.com/src-openeuler/python-sphinx/raw/openEuler-22.03-LTS-SP1/python-sphinx.spec Sphinx-4.4.0.tar.gz Sphinx-4.4.0
+python3-docutils python yes python3-docutils https://gitee.com/src-openeuler/python-docutils/raw/openEuler-22.03-LTS-SP1/python-docutils.spec docutils-0.17.1.tar.gz docutils-0.17.1
+python3-flake8 python yes python3-flake8 https://gitee.com/src-openeuler/python-flake8/raw/openEuler-22.03-LTS-SP1/python-flake8.spec flake8-3.9.2.tar.gz flake8-3.9.2
+python3-mock python yes python3-mock https://gitee.com/src-openeuler/python-mock/raw/openEuler-22.03-LTS-SP1/python-mock.spec mock-4.0.3.tar.gz mock-4.0.3
+python3-mccabe python yes python3-mccabe https://gitee.com/src-openeuler/python-mccabe/raw/openEuler-22.03-LTS-SP1/python-mccabe.spec mccabe-0.6.1.tar.gz mccabe-0.6.1

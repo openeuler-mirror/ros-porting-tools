@@ -494,6 +494,7 @@ def get_license(lic):
             'GNU GPL v3.0': 'GPL-3.0-only',
             'GPL v3': 'GPL-3.0-only',
             'GPLv3': 'GPL-3.0-only',
+            'GPLv3+': 'GPL-3.0-or-later',
             'ECL2.0': 'EPL-2.0',
             'Eclipse Public License 2.0': 'EPL-2.0',
             'Mozilla Public License Version 1.1': 'MPL-1.1',

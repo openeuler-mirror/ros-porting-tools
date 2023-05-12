@@ -1,0 +1,48 @@
+diff -Naur mccabe-0.6.1_org/mccabe.egg-info/PKG-INFO mccabe-0.6.1/mccabe.egg-info/PKG-INFO
+--- mccabe-0.6.1_org/mccabe.egg-info/PKG-INFO	2023-05-12 11:34:54.601426524 +0800
++++ mccabe-0.6.1/mccabe.egg-info/PKG-INFO	2023-05-12 11:35:35.570675016 +0800
+@@ -19,9 +19,9 @@
+         
+         You can install, upgrade, uninstall ``mccabe`` with these commands::
+         
+-          $ pip install mccabe
+-          $ pip install --upgrade mccabe
+-          $ pip uninstall mccabe
++          $ pip3 install mccabe
++          $ pip3 install --upgrade mccabe
++          $ pip3 uninstall mccabe
+         
+         
+         Standalone script
+diff -Naur mccabe-0.6.1_org/PKG-INFO mccabe-0.6.1/PKG-INFO
+--- mccabe-0.6.1_org/PKG-INFO	2023-05-12 11:34:54.601426524 +0800
++++ mccabe-0.6.1/PKG-INFO	2023-05-12 11:35:35.570675016 +0800
+@@ -19,9 +19,9 @@
+         
+         You can install, upgrade, uninstall ``mccabe`` with these commands::
+         
+-          $ pip install mccabe
+-          $ pip install --upgrade mccabe
+-          $ pip uninstall mccabe
++          $ pip3 install mccabe
++          $ pip3 install --upgrade mccabe
++          $ pip3 uninstall mccabe
+         
+         
+         Standalone script
+diff -Naur mccabe-0.6.1_org/README.rst mccabe-0.6.1/README.rst
+--- mccabe-0.6.1_org/README.rst	2023-05-12 11:34:54.601426524 +0800
++++ mccabe-0.6.1/README.rst	2023-05-12 11:35:35.570675016 +0800
+@@ -11,9 +11,9 @@
+ 
+ You can install, upgrade, uninstall ``mccabe`` with these commands::
+ 
+-  $ pip install mccabe
+-  $ pip install --upgrade mccabe
+-  $ pip uninstall mccabe
++  $ pip3 install mccabe
++  $ pip3 install --upgrade mccabe
++  $ pip3 uninstall mccabe
+ 
+ 
+ Standalone script

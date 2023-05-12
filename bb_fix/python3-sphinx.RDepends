@@ -1,0 +1,6 @@
+-python-sphinx-locale
+-python3-babel
+-python3-snowballstemmer
+-python3-imagesize
+-environment(modules)
+-python(Sphinx)
