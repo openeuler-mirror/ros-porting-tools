@@ -287,6 +287,16 @@ gen_depends()
 	echo "" >> $bbfile
 }
 
+gen_appends()
+{
+	pkg=$1
+	bbfile=$2
+
+	[ ! -f ${BB_FIX}/${pkg}/fix/APPENDS ] && return
+
+	cat ${BB_FIX}/${pkg}/fix/APPENDS >> $bbfile
+	echo "" >> $bbfile
+}
 
 gen_build_type()
 {
@@ -396,6 +406,7 @@ main()
 			gen_license $pkg ${ROS_SRC_BASE}/${repo}/${pkg_dir_name} $bbfile
 			gen_src_url $pkg $bbfile
 			gen_depends $pkg $bbfile
+			gen_appends $pkg $bbfile
 			gen_build_type ${ROS_SRC_BASE}/${repo}/${pkg_dir_name} $bbfile
                 done < ${OUTPUT}/.repo_pkgs
         done
