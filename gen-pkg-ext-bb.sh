@@ -229,11 +229,9 @@ main()
 			bbfile_prefix=${BB_EXTERNAL_BASE}
 		fi
 
-		[ -d ${BB_FIX}/$package_name ] && bbfile_prefix="$bbfile_prefix/$package_name"
+		mkdir -p ${bbfile_prefix}/${package_name}
 
-		mkdir -p ${bbfile_prefix}
-
-		bbfile=${bbfile_prefix}/${bbfile_name}.bb
+		bbfile=${bbfile_prefix}/${package_name}/${bbfile_name}.bb
 
 		#the format of spec_url must be like https://gitee.com/src-openeuler/catkin_pkg/raw/master/catkin-pkg.spec
 		spec_name=`echo $spec_url | cut -d'/' -f8`
