@@ -20,3 +20,4 @@ python3-rospkg python yes python3-rospkg https://gitee.com/will_niutao/python-ro
 python3-catkin-sphinx python yes python3-catkin-sphinx https://gitee.com/will_niutao/python-catkin-sphinx/raw/master/python-catkin-sphinx.spec 0.3.2.tar.gz catkin-sphinx-0.3.2
 cppcheck cmake yes cppcheck https://gitee.com/src-openeuler/cppcheck/raw/openEuler-22.03-LTS-SP1/cppcheck.spec 2.6.3.tar.gz cppcheck-2.6.3
 python3-pydocstyle python yes python3-pydocstyle https://gitee.com/src-openeuler/python-pydocstyle/raw/openEuler-22.03-LTS-SP1/python-pydocstyle.spec 6.1.1.tar.gz pydocstyle-6.1.1
+#acl cmake yes acl https://gitee.com/src-openeuler/acl/raw/openEuler-22.03-LTS-SP1/acl.spec acl-2.3.1.tar.gz acl-2.3.1

@@ -192,21 +192,22 @@ bb_fix()
 	require_file=$2
 	bb_deps_suffix=$3
 
-	[ ! -f ${BB_FIX}/${pkg}.${bb_deps_suffix} ] && return
+	if [ -f ${BB_FIX}/${pkg}.${bb_deps_suffix} ]
+	then
+		for dep in `grep "^\-" ${BB_FIX}/${pkg}.${bb_deps_suffix} | sed -e 's#^\-##g'`
+		do
+			sed -i "/^${dep}\$/d" $require_file
+		done
 
-	for dep in `grep "^\-" ${BB_FIX}/${pkg}.${bb_deps_suffix} | sed -e 's#^\-##g'`
-	do
-		sed -i "/^${dep}\$/d" $require_file
-	done
-
-	for dep in `grep "^\+" ${BB_FIX}/${pkg}.${bb_deps_suffix} | sed -e 's#^\+##g'`
-	do
-		echo "$dep" >> $require_file
-	done
+		for dep in `grep "^\+" ${BB_FIX}/${pkg}.${bb_deps_suffix} | sed -e 's#^\+##g'`
+		do
+			echo "$dep" >> $require_file
+		done
+	fi
 
 	while read dep
 	do
-		sed -i "#^$dep\$#d" $require_file
+		sed -i "/^$dep\$/d" $require_file
 	done < ${BB_FIX}/all.remove
 }
 
