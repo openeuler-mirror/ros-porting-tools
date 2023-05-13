@@ -1,0 +1,2 @@
+PROVIDES += "gmock"
+RPROVIDES:${PN} += "gmock"

@@ -6,3 +6,17 @@ python3-docutils python yes python3-docutils https://gitee.com/src-openeuler/pyt
 python3-flake8 python yes python3-flake8 https://gitee.com/src-openeuler/python-flake8/raw/openEuler-22.03-LTS-SP1/python-flake8.spec flake8-3.9.2.tar.gz flake8-3.9.2
 python3-mock python yes python3-mock https://gitee.com/src-openeuler/python-mock/raw/openEuler-22.03-LTS-SP1/python-mock.spec mock-4.0.3.tar.gz mock-4.0.3
 python3-mccabe python yes python3-mccabe https://gitee.com/src-openeuler/python-mccabe/raw/openEuler-22.03-LTS-SP1/python-mccabe.spec mccabe-0.6.1.tar.gz mccabe-0.6.1
+python3-empy python yes python3-empy https://gitee.com/will_niutao/python-empy/raw/master/python-empy.spec empy-3.3.4.tar.gz empy-3.3.4
+gtest cmake yes gtest https://gitee.com/src-openeuler/gtest/raw/openEuler-22.03-LTS-SP1/gtest.spec release-1.8.1.tar.gz googletest-release-1.8.1
+python3-yaml python yes python3-yaml https://gitee.com/src-openeuler/PyYAML/raw/openEuler-22.03-LTS-SP1/PyYAML.spec PyYAML-6.0.tar.gz PyYAML-6.0
+console-bridge cmake yes console-bridge https://gitee.com/will_niutao/console_bridge/raw/master/console_bridge.spec 1.0.2.tar.gz console_bridge-1.0.2
+yaml-cpp cmake yes yaml-cpp https://gitee.com/src-openeuler/yaml-cpp/raw/openEuler-22.03-LTS-SP1/yaml-cpp.spec yaml-cpp-0.6.3.tar.gz yaml-cpp-0.6.3
+python3-lark-parser python yes python3-lark-parser https://gitee.com/src-openeuler/python-lark-parser/raw/master/python-lark-parser.spec lark-parser-0.12.0.tar.gz lark-parser-0.12.0
+python3-netifaces python yes python3-netifaces https://gitee.com/src-openeuler/python-netifaces/raw/openEuler-22.03-LTS-SP1/python-netifaces.spec netifaces-0.11.0.tar.gz netifaces-0.11.0
+pybind11 python yes pybind11 https://gitee.com/src-openeuler/pybind11/raw/openEuler-22.03-LTS-SP1/pybind11.spec v2.8.1.tar.gz pybind11-2.8.1
+tinyxml2 cmake yes tinyxml2 https://gitee.com/src-openeuler/tinyxml2/raw/openEuler-22.03-LTS-SP1/tinyxml2.spec tinyxml2-6.0.0-8c8293b.tar.gz tinyxml2-6.0.0
+python3-rosdistro python yes python3-rosdistro https://gitee.com/will_niutao/python-rosdistro/raw/master/python-rosdistro.spec 0.9.0.tar.gz rosdistro-0.9.0
+python3-rospkg python yes python3-rospkg https://gitee.com/will_niutao/python-rospkg/raw/master/python-rospkg.spec 1.5.0.tar.gz rospkg-1.5.0
+python3-catkin-sphinx python yes python3-catkin-sphinx https://gitee.com/will_niutao/python-catkin-sphinx/raw/master/python-catkin-sphinx.spec 0.3.2.tar.gz catkin-sphinx-0.3.2
+cppcheck cmake yes cppcheck https://gitee.com/src-openeuler/cppcheck/raw/openEuler-22.03-LTS-SP1/cppcheck.spec 2.6.3.tar.gz cppcheck-2.6.3
+python3-pydocstyle python yes python3-pydocstyle https://gitee.com/src-openeuler/python-pydocstyle/raw/openEuler-22.03-LTS-SP1/python-pydocstyle.spec 6.1.1.tar.gz pydocstyle-6.1.1

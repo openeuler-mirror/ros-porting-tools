@@ -160,6 +160,7 @@ rename_depend()
 		sed -i "s#^${rpm_pkg}\$#${bb_pkg}#g" $require_file
 	done <${BB_FIX_PKG_REMAP}
 }
+
 spec_fix()
 {
 	pkg=$1
@@ -187,22 +188,27 @@ spec_fix()
 # fix DEPENDS and RDEPENDS
 bb_fix()
 {
-	require_file=$1
-	bb_deps_suffix=$2
+	pkg=$1
+	require_file=$2
+	bb_deps_suffix=$3
 
-	[ ! -f ${BB_FIX}/${bbfile_name}.${bb_deps_suffix} ] && return
+	[ ! -f ${BB_FIX}/${pkg}.${bb_deps_suffix} ] && return
 
-	for dep in `grep "^\-" ${BB_FIX}/${bbfile_name}.${bb_deps_suffix} | sed -e 's#^\-##g'`
+	for dep in `grep "^\-" ${BB_FIX}/${pkg}.${bb_deps_suffix} | sed -e 's#^\-##g'`
 	do
 		sed -i "/^${dep}\$/d" $require_file
 	done
 
-	for dep in `grep "^\+" ${BB_FIX}/${bbfile_name}.${bb_deps_suffix} | sed -e 's#^\+##g'`
+	for dep in `grep "^\+" ${BB_FIX}/${pkg}.${bb_deps_suffix} | sed -e 's#^\+##g'`
 	do
 		echo "$dep" >> $require_file
 	done
-}
 
+	while read dep
+	do
+		sed -i "#^$dep\$#d" $require_file
+	done < ${BB_FIX}/all.remove
+}
 
 gen_each_depend()
 {
@@ -244,7 +250,7 @@ gen_each_depend()
 
 	rename_requires $require_file
 	rename_depend $require_file
-	bb_fix $require_file $bb_deps_suffix
+	bb_fix $pkg $require_file $bb_deps_suffix
 
 	if [ "$bb_deps_suffix" == "Depends" ]
 	then

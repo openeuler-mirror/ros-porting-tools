@@ -64,7 +64,7 @@ gen_src_uri()
 
 	pkg_bb_dir=`dirname "$bbfile"`
 
-	cp ${BB_FIX}/$package_name/* ${pkg_bb_dir}/
+	cp -r ${BB_FIX}/$package_name/* ${pkg_bb_dir}/
 
 	for patch in `cd ${BB_FIX}/$package_name/files 2>/dev/null && ls *.patch`
 	do
@@ -111,12 +111,11 @@ rename_depend()
 {
 	dep=$1
 
+	echo "$dep" | grep -q "^python%{python3_pkgversion}"
+	[ $? -eq 0 ] && dep=`echo "$dep" | sed -e 's#python%{python3_pkgversion}#python3#g'`
+
 	grep -q "^$dep " ${BB_FIX_PKG_REMAP}
-	if [ $? -ne 0 ]
-	then
-	       	echo "$dep"
-		return
-	fi
+	[ $? -ne 0 ] && echo "$dep" && return
 
 	grep "^$dep " ${BB_FIX_PKG_REMAP} | cut -d' ' -f2
 }
@@ -126,6 +125,8 @@ is_delete_depends()
 	dep=$1
 	bbfile_name=$2
 	suffix=$3
+
+	grep -q "^$dep$" ${BB_FIX}/all.remove && return 0
 
 	[ ! -f ${BB_FIX}/${bbfile_name}.${suffix} ] && return 1
 
@@ -168,6 +169,17 @@ gen_rdepends()
 	done
 
 	echo "\"" >> $bbfile
+	echo "" >> $bbfile
+}
+
+gen_appends()
+{
+	package_name=$1
+	bbfile=$2
+
+	[ ! -f ${BB_FIX}/${package_name}.Append ] && return
+
+	cat ${BB_FIX}/${package_name}.Append >> $bbfile
 	echo "" >> $bbfile
 }
 
@@ -249,6 +261,8 @@ main()
 
 		gen_depends $spec $bbfile $bbfile_name
 		gen_rdepends $spec $bbfile $bbfile_name
+
+		gen_appends $package_name $bbfile
 
 		if [ "$is_native" == "yes" ]
 		then
