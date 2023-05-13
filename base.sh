@@ -28,14 +28,14 @@ mkdir -p ${ROS_OUTPUT_TMP}
 
 error_log()
 {
-        echo -e "\n`date` [Error] $*"
-        echo -e "\n`date` [Error] $*" >>${LOG}
+        echo "`date` [Error] $*"
+        echo "`date` [Error] $*" >>${LOG}
 }
 
 info_log()
 {
-        echo -e "\n`date` [Info ] $*"
-        echo -e "\n`date` [Info ] $*" >> ${LOG}
+        echo "`date` [Info ] $*"
+        echo "`date` [Info ] $*" >> ${LOG}
 }
 
 debug_log()
@@ -44,8 +44,8 @@ debug_log()
 	then
 	        return
 	fi
-        echo -e "\n`date` [Debug] $*"
-        echo -e "\n`date` [Debug] $*" >> ${LOG}
+        echo "`date` [Debug] $*"
+        echo "`date` [Debug] $*" >> ${LOG}
 }
 
 if [ "${ROS_DISTRO}" = "" ]

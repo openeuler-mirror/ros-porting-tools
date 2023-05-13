@@ -99,31 +99,31 @@ gen_src_url()
 
 	echo "SRC_URI = \" \\" >> $bbfile
 	echo "    file://\${OPENEULER_LOCAL_NAME}/ros-\${ROS_DISTRO}-\${ROS_SPN}_\${PV}.orig.tar.gz \\" >> $bbfile
-	if [ ! -d ${ROS_PACKAGE_FIX}/${pkg} ]
+	if [ -d ${ROS_PACKAGE_FIX}/${pkg} ]
+	then
+		for tarball in `cd ${ROS_PACKAGE_FIX}/${pkg} && ls | grep -v "\.fix" | grep -v "\.patch"`
+		do
+			echo "    file://\${OPENEULER_LOCAL_NAME}/${tarball} \\" >> $bbfile
+		done
+
+		if [ -f ${ROS_PACKAGE_FIX}/${pkg}/source.fix ]
+		then
+			for patch in `grep "^Patch.*: " ${ROS_PACKAGE_FIX}/${pkg}/source.fix | awk '{print $2}'`
+			do
+				echo "    file://\${OPENEULER_LOCAL_NAME}/${patch} \\" >> $bbfile
+			done
+		fi
+	fi
+
+	if [ ! -d ${BB_FIX}/$pkg ]
 	then
 		echo "\"" >> $bbfile
 		echo "" >> $bbfile
 		return
 	fi
 
-	for tarball in `cd ${ROS_PACKAGE_FIX}/${pkg} && ls | grep -v "\.fix" | grep -v "\.patch"`
-	do
-		echo "    file://\${OPENEULER_LOCAL_NAME}/${tarball} \\" >> $bbfile
-	done
-
-	if [ -f ${ROS_PACKAGE_FIX}/${pkg}/source.fix ]
-	then
-		for patch in `grep "^Patch.*: " ${ROS_PACKAGE_FIX}/${pkg}/source.fix | awk '{print $2}'`
-		do
-			echo "    file://\${OPENEULER_LOCAL_NAME}/${patch} \\" >> $bbfile
-		done
-	fi
-
-	[ ! -d ${BB_FIX}/$pkg ] && echo "\"" >> $bbfile && return
-
 	pkg_bb_dir=`dirname "$bbfile"`
-
-	cp ${BB_FIX}/$pkg/* ${pkg_bb_dir}
+	cp -r ${BB_FIX}/$pkg/* ${pkg_bb_dir}
 
 	for patch in `cd ${BB_FIX}/$pkg/files 2>/dev/null && ls *.patch`
 	do
