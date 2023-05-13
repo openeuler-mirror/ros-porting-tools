@@ -50,7 +50,7 @@ gen_src_uri()
 	spec=$1
 	bbfile=$2
 	src_name=$3
-	package_name=$4
+	pkg=$4
 
 	echo "SRC_URI = \" \\" >> $bbfile
 	echo "    file://\${OPENEULER_LOCAL_NAME}/${src_name} \\" >> $bbfile
@@ -60,11 +60,15 @@ gen_src_uri()
 		echo "    file://\${OPENEULER_LOCAL_NAME}/${patch} \\" >> $bbfile
 	done
 
-	[ ! -d ${BB_FIX}/$package_name ] && echo "\"" >> $bbfile && return
+	other_cfg=`ls ${BB_FIX}/$pkg 2>/dev/null | grep -v fix`
+	if [ "$other_cfg" == "" ]
+	then
+		echo "\"" >> $bbfile
+		return
+	fi
 
 	pkg_bb_dir=`dirname "$bbfile"`
-
-	cp -r ${BB_FIX}/$package_name/* ${pkg_bb_dir}/
+	`cd ${BB_FIX}/$pkg && ls | grep -v fix | xargs -i cp -r {} ${pkg_bb_dir}`
 
 	for patch in `cd ${BB_FIX}/$package_name/files 2>/dev/null && ls *.patch`
 	do
@@ -123,14 +127,14 @@ rename_depend()
 is_delete_depends()
 {
 	dep=$1
-	bbfile_name=$2
-	suffix=$3
+	pkg=$2
+	fix_bb_deps=$3
 
 	grep -q "^$dep$" ${BB_FIX}/all.remove && return 0
 
-	[ ! -f ${BB_FIX}/${bbfile_name}.${suffix} ] && return 1
+	[ ! -f ${BB_FIX}/${pkg}/fix/${fix_bb_deps} ] && return 1
 
-	grep -q "^\-${dep}$" ${BB_FIX}/${bbfile_name}.${suffix} && return 0
+	grep -q "^\-${dep}$" ${BB_FIX}/${pkg}/fix/${fix_bb_deps} && return 0
 
 	return 1
 }
@@ -144,7 +148,7 @@ gen_depends()
 	echo "DEPENDS += \" \\" >> $bbfile
 	for dep in `grep "^BuildRequires:" $spec | awk '{print $2}' | sed -e 's#-devel##g'`
 	do
-		is_delete_depends $dep $bbfile_name Depends && continue
+		is_delete_depends $dep $bbfile_name DEPENDS && continue
 
 		dep_new=`rename_depend $dep`
 		echo $dep_new | sed -e 's#$#-native \\#g' -e 's#^#    #g' >> $bbfile
@@ -162,7 +166,7 @@ gen_rdepends()
 	echo "RDEPENDS_\${PN} += \" \\" >> $bbfile
 	for dep in `grep "^Requires:" $spec | awk '{print $2}' | sed -e 's#-devel##g'`
 	do
-		is_delete_depends $dep $bbfile_name RDepends && continue
+		is_delete_depends $dep $bbfile_name RDEPENDS && continue
 
 		dep_new=`rename_depend $dep`
 		echo $dep_new | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
@@ -174,12 +178,12 @@ gen_rdepends()
 
 gen_appends()
 {
-	package_name=$1
+	pkg=$1
 	bbfile=$2
 
-	[ ! -f ${BB_FIX}/${package_name}.Append ] && return
+	[ ! -f ${BB_FIX}/${pkg}/fix/APPENDS ] && return
 
-	cat ${BB_FIX}/${package_name}.Append >> $bbfile
+	cat ${BB_FIX}/${pkg}/fix/APPENDS >> $bbfile
 	echo "" >> $bbfile
 }
 

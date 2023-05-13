@@ -115,7 +115,8 @@ gen_src_url()
 		fi
 	fi
 
-	if [ ! -d ${BB_FIX}/$pkg ]
+	other_cfg=`ls ${BB_FIX}/$pkg 2>/dev/null | grep -v fix`
+	if [ "$other_cfg" == "" ]
 	then
 		echo "\"" >> $bbfile
 		echo "" >> $bbfile
@@ -123,7 +124,7 @@ gen_src_url()
 	fi
 
 	pkg_bb_dir=`dirname "$bbfile"`
-	cp -r ${BB_FIX}/$pkg/* ${pkg_bb_dir}
+	`cd ${BB_FIX}/$pkg && ls | grep -v fix | xargs -i cp -r {} ${pkg_bb_dir}`
 
 	for patch in `cd ${BB_FIX}/$pkg/files 2>/dev/null && ls *.patch`
 	do
@@ -137,6 +138,7 @@ gen_src_url()
 # rename the ros origin dependence package name(same this ubuntu) to openEuler,
 # such as in ubuntu system, the develop package name of assimp is assimp-dev,
 # but in openEuler system, the name is assimp-devel.
+# use spec_fix/pkg.remap
 rename_requires()
 {
 	require_file=$1
@@ -151,6 +153,7 @@ rename_requires()
 # such as in openEuler Server system, the name of python package setuptools_scm is 
 # python3-setuptools_scm, but in openEuler embedded system, the name is 
 # python3-setuptools-scm(bcauses the bbfile name use _ to split package name and version).
+# use bb_fix/pkg.remap
 rename_depend()
 {
 	require_file=$1
@@ -190,16 +193,16 @@ bb_fix()
 {
 	pkg=$1
 	require_file=$2
-	bb_deps_suffix=$3
+	fix_bb_deps=$3
 
-	if [ -f ${BB_FIX}/${pkg}.${bb_deps_suffix} ]
+	if [ -f ${BB_FIX}/${pkg}/fix/${fix_bb_deps} ]
 	then
-		for dep in `grep "^\-" ${BB_FIX}/${pkg}.${bb_deps_suffix} | sed -e 's#^\-##g'`
+		for dep in `grep "^\-" ${BB_FIX}/${pkg}/fix/${fix_bb_deps} | sed -e 's#^\-##g'`
 		do
 			sed -i "/^${dep}\$/d" $require_file
 		done
 
-		for dep in `grep "^\+" ${BB_FIX}/${pkg}.${bb_deps_suffix} | sed -e 's#^\+##g'`
+		for dep in `grep "^\+" ${BB_FIX}/${pkg}/fix/${fix_bb_deps} | sed -e 's#^\+##g'`
 		do
 			echo "$dep" >> $require_file
 		done
@@ -214,11 +217,11 @@ bb_fix()
 gen_each_depend()
 {
 	pkg=$1
-	bb_deps_suffix=$2
+	fix_bb_deps=$2
 	spec_deps_suffix=$3
 	bbfile=$4
 
-        debug_log "gen ${bb_deps_suffix}"
+        debug_log "gen ${fix_bb_deps}"
 
 	package_xml_deps=${ROS_DEPS_BASE}/$pkg-${spec_deps_suffix}
 	require_file=${OUTPUT}/.tempDepends
@@ -227,7 +230,7 @@ gen_each_depend()
 
 	if [ -f ${package_xml_deps} ]
 	then
-		if [ "$bb_deps_suffix" == "TDepends" ]
+		if [ "$fix_bb_deps" == "TDEPENDS" ]
 		then
 			cat ${package_xml_deps} | sed -e "s#^BuildRequires: ##g" > ${require_file}
 		else
@@ -251,9 +254,9 @@ gen_each_depend()
 
 	rename_requires $require_file
 	rename_depend $require_file
-	bb_fix $pkg $require_file $bb_deps_suffix
+	bb_fix $pkg $require_file $fix_bb_deps
 
-	if [ "$bb_deps_suffix" == "Depends" ]
+	if [ "$fix_bb_deps" == "DEPENDS" ]
 	then
 		cat $require_file >> ${ROS_NATIVE_PKGS_TMP1}
 		cat $require_file | sed -e 's#-devel$##g' -e 's#$#-native \\#g' -e 's#^#    #g' >> $bbfile
@@ -268,17 +271,17 @@ gen_depends()
 	bbfile=$2
 
 	echo 'DEPENDS = "\' >> $bbfile
-	gen_each_depend $pkg Depends BuildRequires $bbfile
+	gen_each_depend $pkg DEPENDS BuildRequires $bbfile
 	echo '"' >> $bbfile
 	echo "" >> $bbfile
 
 	echo 'RDEPENDS:${PN} += "\' >> $bbfile
-	gen_each_depend $pkg RDepends Requires $bbfile
+	gen_each_depend $pkg RDEPENDS Requires $bbfile
 	echo '"' >> $bbfile
 	echo "" >> $bbfile
 
-	echo 'TEST_DEPENDS = "\' >> $bbfile
-	gen_each_depend $pkg TDepends test-BuildRequires $bbfile
+	echo 'TDEPENDS = "\' >> $bbfile
+	gen_each_depend $pkg TDEPENDS test-BuildRequires $bbfile
 	echo '"' >> $bbfile
 
 	echo "" >> $bbfile
