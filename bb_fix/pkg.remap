@@ -3,3 +3,4 @@ gcc-c++ g++
 python3-PyYAML python3-pyyaml
 libacl acl
 libacl-devel acl
+python3-yaml python3-pyyaml
