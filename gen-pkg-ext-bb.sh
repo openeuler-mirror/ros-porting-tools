@@ -183,6 +183,19 @@ gen_appends()
 	echo "" >> $bbfile
 }
 
+gen_files()
+{
+	bbfile=$1
+
+	echo 'FILES:${PN}: += " \' >> $bbfile
+	echo '    ${libdir}/${BPN}/cmake/* \' >> $bbfile
+	echo '    ${libdir}/cmake/* \' >> $bbfile
+	echo '    ${prefix}/lib/${BPN}/cmake/* \' >> $bbfile
+	echo '    ${prefix}/lib/cmake/* \' >> $bbfile
+	echo '"' >> $bbfile
+	echo "" >> $bbfile
+}
+
 main()
 {
         prepare
@@ -247,6 +260,9 @@ main()
 			echo "" >> $bbfile
 			echo "PYPI_PACKAGE = \"${package_name}\"" >> $bbfile
 			echo "" >> $bbfile
+		else
+			echo "inherit cmake" >> $bbfile
+			echo "" >> $bbfile
 		fi
 
 		echo "OPENEULER_GIT_URL = \"${git_url}\"" >> $bbfile
@@ -270,6 +286,8 @@ main()
 		else
 			echo "BBCLASSEXTEND = \"native\"" >> $bbfile
 		fi
+
+		#gen_files $bbfile
         done < ${SPEC_TO_BB_LIST}
 
         info_log "Gen bb files done, you can find it in ${ROS_BB_BASE}"

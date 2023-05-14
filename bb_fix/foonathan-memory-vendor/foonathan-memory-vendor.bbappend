@@ -1,5 +1,6 @@
 FILES:${PN}:prepend = " \
     ${ros_prefix}/lib/foonathan_memory/* \
+    ${ros_prefix}/lib64/foonathan_memory/* \
 "
 export OPENEULER_SP_DIR
 do_configure:prepend() {
