@@ -132,6 +132,8 @@ is_delete_depends()
 
 	grep -q "^$dep$" ${BB_FIX}/all.remove && return 0
 
+	[ "$dep" == "$pkg" ] && return 0
+
 	[ ! -f ${BB_FIX}/${pkg}/fix/${fix_bb_deps} ] && return 1
 
 	grep -q "^\-${dep}$" ${BB_FIX}/${pkg}/fix/${fix_bb_deps} && return 0
