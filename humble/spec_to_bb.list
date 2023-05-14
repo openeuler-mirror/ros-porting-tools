@@ -5,7 +5,7 @@ python3-sphinx python no python3-sphinx https://gitee.com/src-openeuler/python-s
 python3-docutils python yes python3-docutils https://gitee.com/src-openeuler/python-docutils/raw/openEuler-22.03-LTS-SP1/python-docutils.spec docutils-0.17.1.tar.gz docutils-0.17.1
 python3-flake8 python yes python3-flake8 https://gitee.com/src-openeuler/python-flake8/raw/openEuler-22.03-LTS-SP1/python-flake8.spec flake8-3.9.2.tar.gz flake8-3.9.2
 python3-mock python yes python3-mock https://gitee.com/src-openeuler/python-mock/raw/openEuler-22.03-LTS-SP1/python-mock.spec mock-4.0.3.tar.gz mock-4.0.3
-python3-mccabe python yes python3-mccabe https://gitee.com/src-openeuler/python-mccabe/raw/openEuler-22.03-LTS-SP1/python-mccabe.spec mccabe-0.6.1.tar.gz mccabe-0.6.1
+#python3-mccabe python yes python3-mccabe https://gitee.com/src-openeuler/python-mccabe/raw/openEuler-22.03-LTS-SP1/python-mccabe.spec mccabe-0.6.1.tar.gz mccabe-0.6.1
 python3-empy python yes python3-empy https://gitee.com/will_niutao/python-empy/raw/master/python-empy.spec empy-3.3.4.tar.gz empy-3.3.4
 gtest cmake yes gtest https://gitee.com/src-openeuler/gtest/raw/openEuler-22.03-LTS-SP1/gtest.spec release-1.8.1.tar.gz googletest-release-1.8.1
 #python3-yaml python yes python3-yaml https://gitee.com/src-openeuler/PyYAML/raw/openEuler-22.03-LTS-SP1/PyYAML.spec PyYAML-6.0.tar.gz PyYAML-6.0
