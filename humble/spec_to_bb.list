@@ -13,7 +13,7 @@ console-bridge cmake yes console-bridge https://gitee.com/will_niutao/console_br
 yaml-cpp cmake yes yaml-cpp https://gitee.com/src-openeuler/yaml-cpp/raw/openEuler-22.03-LTS-SP1/yaml-cpp.spec yaml-cpp-0.6.3.tar.gz yaml-cpp-yaml-cpp-0.6.3
 python3-lark-parser python yes python3-lark-parser https://gitee.com/src-openeuler/python-lark-parser/raw/master/python-lark-parser.spec lark-parser-0.12.0.tar.gz lark-parser-0.12.0
 python3-netifaces python yes python3-netifaces https://gitee.com/src-openeuler/python-netifaces/raw/openEuler-22.03-LTS-SP1/python-netifaces.spec netifaces-0.11.0.tar.gz netifaces-0.11.0
-pybind11 python yes pybind11 https://gitee.com/src-openeuler/pybind11/raw/openEuler-22.03-LTS-SP1/pybind11.spec v2.8.1.tar.gz pybind11-2.8.1
+pybind11 cmake yes pybind11 https://gitee.com/src-openeuler/pybind11/raw/openEuler-22.03-LTS-SP1/pybind11.spec v2.8.1.tar.gz pybind11-2.8.1
 tinyxml2 cmake yes tinyxml2 https://gitee.com/src-openeuler/tinyxml2/raw/openEuler-22.03-LTS-SP1/tinyxml2.spec tinyxml2-6.0.0-8c8293b.tar.gz tinyxml2-8c8293ba8969a46947606a93ff0cb5a083aab47a
 python3-rosdistro python yes python3-rosdistro https://gitee.com/will_niutao/python-rosdistro/raw/master/python-rosdistro.spec 0.9.0.tar.gz rosdistro-0.9.0
 python3-rospkg python yes python3-rospkg https://gitee.com/will_niutao/python-rospkg/raw/master/python-rospkg.spec 1.5.0.tar.gz rospkg-1.5.0
@@ -21,3 +21,4 @@ python3-catkin-sphinx python yes python3-catkin-sphinx https://gitee.com/will_ni
 cppcheck cmake yes cppcheck https://gitee.com/src-openeuler/cppcheck/raw/openEuler-22.03-LTS-SP1/cppcheck.spec 2.6.3.tar.gz cppcheck-2.6.3
 python3-pydocstyle python yes python3-pydocstyle https://gitee.com/src-openeuler/python-pydocstyle/raw/openEuler-22.03-LTS-SP1/python-pydocstyle.spec 6.1.1.tar.gz pydocstyle-6.1.1
 #acl cmake yes acl https://gitee.com/src-openeuler/acl/raw/openEuler-22.03-LTS-SP1/acl.spec acl-2.3.1.tar.gz acl-2.3.1
+eigen3 cmake yes eigen3 https://gitee.com/will_niutao/eigen/raw/master/eigen3.spec eigen-3.3.8.tar.bz2 eigen-3.3.8

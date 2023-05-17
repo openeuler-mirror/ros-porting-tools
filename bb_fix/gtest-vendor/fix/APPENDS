@@ -1,0 +1,6 @@
+FILES:${PN}-dev += " \
+	${ros_prefix}/src \
+"
+SYSROOT_DIRS_NATIVE:append = " \
+    ${prefix}/src \
+"

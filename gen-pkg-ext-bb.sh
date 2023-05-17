@@ -141,39 +141,71 @@ is_delete_depends()
 	return 1
 }
 
+gen_each_depend()
+{
+	spec=$1
+	bbfile=$2
+	bbfile_name=$3
+	fix_bb_deps=$4
+	spec_deps=$5
+
+	require_file=${OUTPUT}/.tempDepends
+	> ${require_file}
+
+	for dep in `grep "^${spec_deps}:" $spec | awk -F":" '{print $2}' | awk -F">=" '{print $1}' | grep -v " = " | sed -e 's#-devel##g'`
+	do
+		is_delete_depends $dep $bbfile_name ${fix_bb_deps} && continue
+
+		dep_new=`rename_depend $dep`
+		echo $dep_new >> $require_file
+	done
+
+	cat $require_file | sed -e 's# ##g' | sort | uniq >${OUTPUT}/.temp${fix_bb_deps}
+
+	if [ "$fix_bb_deps" == "DEPENDS" ]
+	then
+		if [ ! -f ${OUTPUT}/.tempRDEPENDS ]
+		then
+			cat ${OUTPUT}/.temp${fix_bb_deps} | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
+			return
+		fi
+
+		rm -f ${OUTPUT}/.temp${fix_bb_deps}
+		#echo --------------------
+		#cat $require_file
+		#echo -------------------
+
+		for i in `cat $require_file | sort | uniq`
+		do
+			grep -q "^${i}$" ${OUTPUT}/.tempRDEPENDS
+			if [ $? -eq 0 ]
+			then
+				# if package in RDEPENDS, it's must a target device package.
+				echo "$i" >> ${OUTPUT}/.temp${fix_bb_deps}
+			else
+				echo "${i}-native" >> ${OUTPUT}/.temp${fix_bb_deps}
+			fi
+		done
+		cat ${OUTPUT}/.tempRDEPENDS >> ${OUTPUT}/.temp${fix_bb_deps}
+	fi
+	
+	cat ${OUTPUT}/.temp${fix_bb_deps} | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
+}
+
 gen_depends()
 {
 	spec=$1
 	bbfile=$2
 	bbfile_name=$3
 
-	echo "DEPENDS += \" \\" >> $bbfile
-	for dep in `grep "^BuildRequires:" $spec | awk '{print $2}' | sed -e 's#-devel##g'`
-	do
-		is_delete_depends $dep $bbfile_name DEPENDS && continue
-
-		dep_new=`rename_depend $dep`
-		echo $dep_new | sed -e 's#$#-native \\#g' -e 's#^#    #g' >> $bbfile
-	done
+	rm -f ${OUTPUT}/{.tempRDEPENDS,.tempDEPENDS,.tempTDEPENDS}
+	echo "RDEPENDS_\${PN} += \" \\" >> $bbfile
+	gen_each_depend $spec $bbfile $bbfile_name RDEPENDS Requires
 	echo "\"" >> $bbfile
 	echo "" >> $bbfile
-}
 
-gen_rdepends()
-{
-	spec=$1
-	bbfile=$2
-	bbfile_name=$3
-
-	echo "RDEPENDS_\${PN} += \" \\" >> $bbfile
-	for dep in `grep "^Requires:" $spec | awk '{print $2}' | sed -e 's#-devel##g'`
-	do
-		is_delete_depends $dep $bbfile_name RDEPENDS && continue
-
-		dep_new=`rename_depend $dep`
-		echo $dep_new | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
-	done
-
+	echo "DEPENDS += \" \\" >> $bbfile
+	gen_each_depend $spec $bbfile $bbfile_name DEPENDS BuildRequires
 	echo "\"" >> $bbfile
 	echo "" >> $bbfile
 }
@@ -280,7 +312,6 @@ main()
 		echo "" >> $bbfile
 
 		gen_depends $spec $bbfile $bbfile_name
-		gen_rdepends $spec $bbfile $bbfile_name
 
 		gen_appends $package_name $bbfile
 

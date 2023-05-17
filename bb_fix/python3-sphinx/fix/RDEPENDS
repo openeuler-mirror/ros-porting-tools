@@ -4,3 +4,6 @@
 -python3-imagesize
 -environment(modules)
 -python(Sphinx)
+-python3-sphinxcontrib-websupport
+-python3-sphinx-theme-alabaster
+-python3-sphinx_rtd_theme

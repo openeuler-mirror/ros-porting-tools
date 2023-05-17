@@ -1,6 +1,4 @@
 gcc
 gcc-c++
 gdb
-%{name}%{?_isa}
-%{name}
 libatomic

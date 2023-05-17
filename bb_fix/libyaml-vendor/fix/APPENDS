@@ -2,7 +2,9 @@ do_configure:prepend() {
 	cp ${OPENEULER_SP_DIR}/libyaml_vendor/libyaml-0.2.5.tar.gz ${S}
 }
 
-do_install:append() {
-	mkdir -p ${D}/${datadir}/yaml
-	mv ${D}/${prefix}/cmake ${D}/${datadir}/yaml
-}
+
+FILES:${PN}:prepend = " \
+	${prefix}/cmake \
+	${prefix}/lib \
+"
+INSANE_SKIP:${PN}-dev += "dev-elf"

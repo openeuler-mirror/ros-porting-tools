@@ -256,13 +256,36 @@ gen_each_depend()
 	rename_depend $require_file
 	bb_fix $pkg $require_file $fix_bb_deps
 
+	cat $require_file | sed -e 's#-devel$##g' | sort | uniq >${OUTPUT}/.temp${fix_bb_deps}
+
 	if [ "$fix_bb_deps" == "DEPENDS" ]
 	then
-		cat $require_file >> ${ROS_NATIVE_PKGS_TMP1}
-		cat $require_file | sed -e 's#-devel$##g' -e 's#$#-native \\#g' -e 's#^#    #g' >> $bbfile
-	else
-		cat $require_file | sed -e 's#-devel$##g' -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
+		if [ ! -f ${OUTPUT}/.tempRDEPENDS ]
+		then
+			cat ${OUTPUT}/.temp${fix_bb_deps} | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
+			cat ${OUTPUT}/.temp${fix_bb_deps} >> ${ROS_NATIVE_PKGS_TMP1}
+			return
+		fi
+
+		rm -f ${OUTPUT}/.temp${fix_bb_deps}
+
+		for i in `cat $require_file | sed -e 's#-devel$##g' | sort | uniq`
+		do
+			grep -q "^${i}$" ${OUTPUT}/.tempRDEPENDS
+			if [ $? -eq 0 ]
+			then
+				# if package in RDEPENDS, it's must a target device package.
+				echo "$i" >> ${OUTPUT}/.temp${fix_bb_deps}
+			else
+				echo "${i}-native" >> ${OUTPUT}/.temp${fix_bb_deps}
+				echo "$i" >> ${ROS_NATIVE_PKGS_TMP1}
+			fi
+		done
+		cat ${OUTPUT}/.tempRDEPENDS >> ${OUTPUT}/.temp${fix_bb_deps}
 	fi
+	
+	cat ${OUTPUT}/.temp${fix_bb_deps} | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
+
 }
 
 gen_depends()
@@ -270,13 +293,14 @@ gen_depends()
 	pkg=$1
 	bbfile=$2
 
-	echo 'DEPENDS = "\' >> $bbfile
-	gen_each_depend $pkg DEPENDS BuildRequires $bbfile
+	rm -f ${OUTPUT}/{.tempRDEPENDS,.tempDEPENDS,.tempTDEPENDS}
+	echo 'RDEPENDS:${PN} += "\' >> $bbfile
+	gen_each_depend $pkg RDEPENDS Requires $bbfile
 	echo '"' >> $bbfile
 	echo "" >> $bbfile
 
-	echo 'RDEPENDS:${PN} += "\' >> $bbfile
-	gen_each_depend $pkg RDEPENDS Requires $bbfile
+	echo 'DEPENDS = "\' >> $bbfile
+	gen_each_depend $pkg DEPENDS BuildRequires $bbfile
 	echo '"' >> $bbfile
 	echo "" >> $bbfile
 
