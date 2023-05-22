@@ -1,0 +1,3 @@
+do_install:append() {
+    rm ${D}/${prefix}/${PYTHON_SITEPACKAGES_DIR}/${ROS_BPN}/lib*_py.so
+}

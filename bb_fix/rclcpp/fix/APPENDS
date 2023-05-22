@@ -1,0 +1,6 @@
+FILES:${PN}-dev:remove = " \
+    ${prefix}/lib/lib*.so \
+"
+FILES:${PN}:append = " \
+    ${prefix}/lib \
+"

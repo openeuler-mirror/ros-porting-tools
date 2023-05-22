@@ -1,3 +1,6 @@
 FILES:${PN} += " \
     ${prefix}/tools \
 "
+SYSROOT_DIRS:append =" \
+    ${prefix}/bin \
+"
