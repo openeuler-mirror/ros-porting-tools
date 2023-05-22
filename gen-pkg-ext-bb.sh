@@ -113,59 +113,71 @@ gen_license()
 
 rename_depend()
 {
-	dep=$1
+	require_file=$1
 
-	echo "$dep" | grep -q "^python%{python3_pkgversion}"
-	[ $? -eq 0 ] && dep=`echo "$dep" | sed -e 's#python%{python3_pkgversion}#python3#g'`
+	sed -i 's#python%{python3_pkgversion}#python3#g' $require_file
 
-	grep -q "^$dep " ${BB_FIX_PKG_REMAP}
-	[ $? -ne 0 ] && echo "$dep" && return
+	for dep in `cat $require_file`
+	do
+		map=`grep "^${dep} " ${BB_FIX_PKG_REMAP}`
+		[ "$map" == "" ] && continue
 
-	grep "^$dep " ${BB_FIX_PKG_REMAP} | cut -d' ' -f2
+		bb_pkg=`echo $map | cut -d' ' -f2`
+		sed -i "s#^${dep}\$#${bb_pkg}#g" $require_file
+	done
 }
 
-is_delete_depends()
+# fix DEPENDS and RDEPENDS
+bb_fix()
 {
-	dep=$1
-	pkg=$2
+	pkg=$1
+	require_file=$2
 	fix_bb_deps=$3
 
-	grep -q "^$dep$" ${BB_FIX}/all.remove && return 0
+	if [ -f ${BB_FIX}/${pkg}/fix/${fix_bb_deps} ]
+	then
+		for dep in `grep "^\-" ${BB_FIX}/${pkg}/fix/${fix_bb_deps} | sed -e 's#^\-##g'`
+		do
+			sed -i "/^${dep}\$/d" $require_file
+		done
 
-	[ "$dep" == "$pkg" ] && return 0
+		for dep in `grep "^\+" ${BB_FIX}/${pkg}/fix/${fix_bb_deps} | sed -e 's#^\+##g'`
+		do
+			echo "$dep" >> $require_file
+		done
+	fi
 
-	[ ! -f ${BB_FIX}/${pkg}/fix/${fix_bb_deps} ] && return 1
-
-	grep -q "^\-${dep}$" ${BB_FIX}/${pkg}/fix/${fix_bb_deps} && return 0
-
-	return 1
+	while read dep
+	do
+		sed -i "/^$dep\$/d" $require_file
+	done < ${BB_FIX}/all.remove
 }
-
 gen_each_depend()
 {
-	spec=$1
-	bbfile=$2
-	bbfile_name=$3
-	fix_bb_deps=$4
-	spec_deps=$5
+	pkg=$1
+	spec=$2
+	bbfile=$3
+	bbfile_name=$4
+	fix_bb_deps=$5
+	spec_deps=$6
 
 	require_file=${OUTPUT}/.tempDepends
-	> ${require_file}
 
-	for dep in `grep "^${spec_deps}:" $spec | awk -F":" '{print $2}' | awk -F">=" '{print $1}' | grep -v " = " | sed -e 's#-devel##g'`
+	>$require_file
+	for dep in `grep "^${spec_deps}:" $spec | awk -F":" '{print $2}' | awk -F">=" '{print $1}' | grep -v " = "`
 	do
-		is_delete_depends $dep $bbfile_name ${fix_bb_deps} && continue
-
-		dep_new=`rename_depend $dep`
-		echo $dep_new >> $require_file
+	       	echo $dep >>$require_file
 	done
 
-	cat $require_file | sed -e 's# ##g' | sort | uniq >${OUTPUT}/.temp${fix_bb_deps}
+	rename_depend ${require_file}
+
+	cat $require_file | sed -e 's#-devel$##g' | sort | uniq >${OUTPUT}/.temp${fix_bb_deps}
 
 	if [ "$fix_bb_deps" == "DEPENDS" ]
 	then
 		if [ ! -f ${OUTPUT}/.tempRDEPENDS ]
 		then
+			bb_fix $pkg ${OUTPUT}/.temp${fix_bb_deps} $fix_bb_deps
 			cat ${OUTPUT}/.temp${fix_bb_deps} | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
 			return
 		fi
@@ -175,10 +187,10 @@ gen_each_depend()
 		#cat $require_file
 		#echo -------------------
 
-		for i in `cat $require_file | sort | uniq`
+		for i in `cat $require_file | sed -e 's#-devel$##g' | sort | uniq`
 		do
 			grep -q "^${i}$" ${OUTPUT}/.tempRDEPENDS
-			if [ $? -eq 0 ]
+			if [ $? -eq 0 -o "${i##*-}" == "native" ]
 			then
 				# if package in RDEPENDS, it's must a target device package.
 				echo "$i" >> ${OUTPUT}/.temp${fix_bb_deps}
@@ -189,23 +201,26 @@ gen_each_depend()
 		cat ${OUTPUT}/.tempRDEPENDS >> ${OUTPUT}/.temp${fix_bb_deps}
 	fi
 	
+	bb_fix $pkg ${OUTPUT}/.temp${fix_bb_deps} $fix_bb_deps
+
 	cat ${OUTPUT}/.temp${fix_bb_deps} | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
 }
 
 gen_depends()
 {
-	spec=$1
-	bbfile=$2
-	bbfile_name=$3
+	pkg=$1
+	spec=$2
+	bbfile=$3
+	bbfile_name=$4
 
 	rm -f ${OUTPUT}/{.tempRDEPENDS,.tempDEPENDS,.tempTDEPENDS}
 	echo "RDEPENDS_\${PN} += \" \\" >> $bbfile
-	gen_each_depend $spec $bbfile $bbfile_name RDEPENDS Requires
+	gen_each_depend $pkg $spec $bbfile $bbfile_name RDEPENDS Requires
 	echo "\"" >> $bbfile
 	echo "" >> $bbfile
 
 	echo "DEPENDS += \" \\" >> $bbfile
-	gen_each_depend $spec $bbfile $bbfile_name DEPENDS BuildRequires
+	gen_each_depend $pkg $spec $bbfile $bbfile_name DEPENDS BuildRequires
 	echo "\"" >> $bbfile
 	echo "" >> $bbfile
 }
@@ -311,7 +326,7 @@ main()
 		echo "S = \"\${WORKDIR}/${unpack_name}\"" >> $bbfile
 		echo "" >> $bbfile
 
-		gen_depends $spec $bbfile $bbfile_name
+		gen_depends $package_name $spec $bbfile $bbfile_name
 
 		gen_appends $package_name $bbfile
 

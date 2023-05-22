@@ -1,4 +1,10 @@
 gcc
+gcc-native
+g++
+g++-native
 gcc-c++
+gcc-c++-native
 gdb
+gdb-native
 libatomic
+libatomic-native

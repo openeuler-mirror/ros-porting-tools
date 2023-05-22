@@ -143,10 +143,14 @@ rename_requires()
 {
 	require_file=$1
 
-	while read deb_pkg rpm_pkg
+	for dep in `cat $require_file`
 	do
-		sed -i "s#^${deb_pkg}\$#${rpm_pkg}#g" $require_file
-	done <${ROS_PKG_REMAP}
+		map=`grep "^${dep} " ${ROS_PKG_REMAP}`
+		[ "$map" == "" ] && continue
+
+		bb_pkg=`echo $map | cut -d' ' -f2`
+		sed -i "s#^${dep}\$#${bb_pkg}#g" $require_file
+	done
 }
 
 # rename the openEuler rpm package name to openEuler embedded package name,
@@ -158,10 +162,14 @@ rename_depend()
 {
 	require_file=$1
 
-	while read rpm_pkg bb_pkg
+	for dep in `cat $require_file`
 	do
-		sed -i "s#^${rpm_pkg}\$#${bb_pkg}#g" $require_file
-	done <${BB_FIX_PKG_REMAP}
+		map=`grep "^${dep} " ${BB_FIX_PKG_REMAP}`
+		[ "$map" == "" ] && continue
+
+		bb_pkg=`echo $map | cut -d' ' -f2`
+		sed -i "s#^${dep}\$#${bb_pkg}#g" $require_file
+	done
 }
 
 spec_fix()
@@ -254,7 +262,6 @@ gen_each_depend()
 
 	rename_requires $require_file
 	rename_depend $require_file
-	bb_fix $pkg $require_file $fix_bb_deps
 
 	cat $require_file | sed -e 's#-devel$##g' | sort | uniq >${OUTPUT}/.temp${fix_bb_deps}
 
@@ -262,6 +269,7 @@ gen_each_depend()
 	then
 		if [ ! -f ${OUTPUT}/.tempRDEPENDS ]
 		then
+			bb_fix $pkg ${OUTPUT}/.temp${fix_bb_deps} $fix_bb_deps
 			cat ${OUTPUT}/.temp${fix_bb_deps} | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
 			cat ${OUTPUT}/.temp${fix_bb_deps} >> ${ROS_NATIVE_PKGS_TMP1}
 			return
@@ -272,7 +280,7 @@ gen_each_depend()
 		for i in `cat $require_file | sed -e 's#-devel$##g' | sort | uniq`
 		do
 			grep -q "^${i}$" ${OUTPUT}/.tempRDEPENDS
-			if [ $? -eq 0 ]
+			if [ $? -eq 0 -o "${i##*-}" == "native" ]
 			then
 				# if package in RDEPENDS, it's must a target device package.
 				echo "$i" >> ${OUTPUT}/.temp${fix_bb_deps}
@@ -283,6 +291,8 @@ gen_each_depend()
 		done
 		cat ${OUTPUT}/.tempRDEPENDS >> ${OUTPUT}/.temp${fix_bb_deps}
 	fi
+	
+	bb_fix $pkg ${OUTPUT}/.temp${fix_bb_deps} $fix_bb_deps
 	
 	cat ${OUTPUT}/.temp${fix_bb_deps} | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
 

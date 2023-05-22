@@ -1,0 +1,16 @@
+-ament-cmake-auto-native
+-ament-cmake-gmock-native
+-ament-cmake-gtest-native
+-ament-cmake-native
+-ament-cmake-pytest-native
+-ament-cmake-ros-native
+-ament-lint-auto-native
+-ament-lint-common-native
++ament-cmake-auto
++ament-cmake-gmock
++ament-cmake-gtest
++ament-cmake
++ament-cmake-pytest
++ament-cmake-ros
++ament-lint-auto
++ament-lint-common
