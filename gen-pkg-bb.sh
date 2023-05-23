@@ -82,10 +82,10 @@ gen_license()
 		fi
 	done < ${OUTPUT}/.tempLicense
 
-	lic_org=`grep "license" ${pkg_dir}/package.xml`
-	lic_beginline=`grep -n "license" ${pkg_dir}/package.xml | head -1 | cut -d':' -f1`
-	lic_endline=`grep -n "license" ${pkg_dir}/package.xml | tail -1 | cut -d':' -f1`
-	lic_md5=`echo "$lic_org" | md5sum | cut -d' ' -f1`
+	lic_org=`grep "<license" ${pkg_dir}/package.xml`
+	lic_beginline=`grep -n "<license" ${pkg_dir}/package.xml | head -1 | cut -d':' -f1`
+	lic_endline=`grep -n "<license" ${pkg_dir}/package.xml | tail -1 | cut -d':' -f1`
+	lic_md5=`sed -n "${lic_beginline},${lic_endline}p" ${pkg_dir}/package.xml | md5sum | cut -d' ' -f1`
 
 	echo "LICENSE = \"$lics\"" >> $bbfile
 	echo "LIC_FILES_CHKSUM = \"file://package.xml;beginline=${lic_beginline};endline=${lic_endline};md5=${lic_md5}\"" >> $bbfile
@@ -293,6 +293,11 @@ gen_each_depend()
 	fi
 	
 	bb_fix $pkg ${OUTPUT}/.temp${fix_bb_deps} $fix_bb_deps
+
+	if [ "$fix_bb_deps" == "RDEPENDS" ]
+	then
+		sed -i "s#-native##g" ${OUTPUT}/.temp${fix_bb_deps}
+	fi
 	
 	cat ${OUTPUT}/.temp${fix_bb_deps} | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
 

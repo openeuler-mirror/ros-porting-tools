@@ -1,0 +1,12 @@
+diff -Naur ros-humble-rclpy-3.3.8_org/CMakeLists.txt ros-humble-rclpy-3.3.8/CMakeLists.txt
+--- ros-humble-rclpy-3.3.8_org/CMakeLists.txt	2023-05-23 18:03:07.487640448 +0800
++++ ros-humble-rclpy-3.3.8/CMakeLists.txt	2023-05-23 18:03:17.041705896 +0800
+@@ -116,7 +116,7 @@
+   rcutils::rcutils
+   rosidl_runtime_c::rosidl_runtime_c
+ )
+-configure_build_install_location(_rclpy_pybind11)
++#configure_build_install_location(_rclpy_pybind11)
+ 
+ if(NOT WIN32)
+   ament_environment_hooks(

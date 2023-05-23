@@ -1,6 +1,3 @@
-FILES:${PN}-dev += " \
-	${ros_prefix}/src \
-"
-SYSROOT_DIRS_NATIVE:append = " \
-    ${prefix}/src \
+FILES:${PN} += " \
+    ${ros_prefix}/src \
 "
