@@ -183,9 +183,6 @@ gen_each_depend()
 		fi
 
 		rm -f ${OUTPUT}/.temp${fix_bb_deps}
-		#echo --------------------
-		#cat $require_file
-		#echo -------------------
 
 		for i in `cat $require_file | sed -e 's#-devel$##g' | sort | uniq`
 		do
@@ -203,7 +200,12 @@ gen_each_depend()
 	
 	bb_fix $pkg ${OUTPUT}/.temp${fix_bb_deps} $fix_bb_deps
 
-	cat ${OUTPUT}/.temp${fix_bb_deps} | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
+	if [ "$fix_bb_deps" == "RDEPENDS" ]
+	then
+		cat ${OUTPUT}/.temp${fix_bb_deps} | sed -e 's#-native$##g' | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
+	else
+		cat ${OUTPUT}/.temp${fix_bb_deps} | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
+	fi
 }
 
 gen_depends()

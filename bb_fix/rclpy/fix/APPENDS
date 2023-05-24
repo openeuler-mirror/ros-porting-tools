@@ -1,0 +1,4 @@
+# fix link error
+do_configure:prepend() {
+    rm -f ${STAGING_DIR_NATIVE}/usr/lib/libpython*.so
+}

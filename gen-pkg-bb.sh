@@ -296,11 +296,10 @@ gen_each_depend()
 
 	if [ "$fix_bb_deps" == "RDEPENDS" ]
 	then
-		sed -i "s#-native##g" ${OUTPUT}/.temp${fix_bb_deps}
+		cat ${OUTPUT}/.temp${fix_bb_deps} | sed -e 's#-native$##g' | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
+	else
+		cat ${OUTPUT}/.temp${fix_bb_deps} | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
 	fi
-	
-	cat ${OUTPUT}/.temp${fix_bb_deps} | sort | uniq | sed -e 's#$# \\#g' -e 's#^#    #g' >> $bbfile
-
 }
 
 gen_depends()

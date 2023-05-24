@@ -8,3 +8,4 @@ gdb
 gdb-native
 libatomic
 libatomic-native
+cmake
