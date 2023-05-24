@@ -2,3 +2,7 @@
 do_configure:prepend() {
     rm -f ${STAGING_DIR_NATIVE}/usr/lib/libpython*.so
 }
+
+do_install:append() {
+    mv ${D}/${prefix}/${PYTHON_SITEPACKAGES_DIR}/${ROS_BPN}/_rclpy_pybind11.cpython*.so ${D}/${prefix}/${PYTHON_SITEPACKAGES_DIR}/${ROS_BPN}/_rclpy_pybind11.${PYTHON_SOABI}.so
+}
