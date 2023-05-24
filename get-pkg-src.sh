@@ -55,7 +55,7 @@ main()
 
 	info_log "Start to analyse ros-pkg."
 
-	while read pkg base_path version
+	while read pkg base_path version git_url tree
 	do
 		if [ "$pkg" = "" -o "$base_path" = "" ]
 		then
@@ -77,7 +77,7 @@ main()
 			then
 				error_log "Can not find src path for package $pkg"
 			fi
-			echo -e "$pkg\t$pkg_src_path\t$version-1" >> ${ROS_PKG_SRC}
+			echo -e "$pkg\t$pkg_src_path\t$version-1\t$git_url\t$tree" >> ${ROS_PKG_SRC}
 		else
 			pkg_org_name=`echo $pkg | sed "s/-/_/g"`
 			pkg_src_path=""
@@ -101,7 +101,7 @@ main()
 			then
 				error_log "Can not find src path for package $pkg"
 			fi
-			echo -e "$pkg\t$pkg_src_path\t$version" >> ${ROS_PKG_SRC}
+			echo -e "$pkg\t$pkg_src_path\t$version\t$git_url\t$tree" >> ${ROS_PKG_SRC}
 		fi
 	done < ${ROS_PKG_LIST}
 

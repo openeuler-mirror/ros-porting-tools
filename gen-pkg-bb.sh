@@ -96,9 +96,25 @@ gen_src_url()
 {
 	pkg=$1
 	bbfile=$2
+	git_url=$3
+	tree=$4
+	path=$5
+
+	if [ "$SRC_TAR_FROM" != "ubuntu" ]
+	then
+		echo "OPENEULER_GIT_URL = \"$git_url\"" >> $bbfile
+		echo "OPENEULER_BRANCH = \"${tree}\"" >> $bbfile
+		echo "S = \"\${WORKDIR}/${path}\"" >> $bbfile
+	fi
 
 	echo "SRC_URI = \" \\" >> $bbfile
-	echo "    file://\${OPENEULER_LOCAL_NAME}/ros-\${ROS_DISTRO}-\${ROS_SPN}_\${PV}.orig.tar.gz \\" >> $bbfile
+	if [ "$SRC_TAR_FROM" == "ubuntu" ]
+	then
+		echo "    file://\${OPENEULER_LOCAL_NAME}/ros-\${ROS_DISTRO}-\${ROS_SPN}_\${PV}.orig.tar.gz \\" >> $bbfile
+	else
+		echo "    file://${path} \\" >> $bbfile
+	fi
+
 	if [ -d ${ROS_PACKAGE_FIX}/${pkg} ]
 	then
 		for tarball in `cd ${ROS_PACKAGE_FIX}/${pkg} && ls | grep -v "\.fix" | grep -v "\.patch"`
@@ -244,6 +260,12 @@ gen_each_depend()
 		else
 			cat ${package_xml_deps} | sed -e "s#^${spec_deps_suffix}: ##g" > ${require_file}
 		fi
+
+		if [ "$SRC_TAR_FROM" != "ubuntu" ]
+		then
+			sed -i "s#_#-#g" ${require_file}
+			sed -i "s#ros-distro#ros_distro#g" ${require_file}
+		fi
 	fi
 
 	spec_fix $pkg $spec_deps_suffix $require_file
@@ -387,7 +409,7 @@ main()
                 grep -P "\t$repo\t" ${ROS_PKG_SRC} >${OUTPUT}/.repo_pkgs
                 grep -P "\t$repo/" ${ROS_PKG_SRC} >>${OUTPUT}/.repo_pkgs
 
-                while read pkg path version
+                while read pkg path version git_url tree
                 do
 			if [ "$GEN_ONE" != "" -a "$pkg" != "$GEN_ONE" ]
 			then
@@ -405,7 +427,12 @@ main()
                         base_version=`echo $version | awk -F"-" '{print $1}'`
                         release_version=`echo $version | awk -F"-" '{print $2}'`
 
-                	pkg_dir_name=`cd ${ROS_SRC_BASE}/${repo} && ls ros-${ROS_DISTRO}-${pkg}_*.orig.tar.gz | sed -e "s#.orig.tar.gz##g" | sed -e "s#_#-#g"`
+			if [ "$SRC_TAR_FROM" == "ubuntu" ]
+			then
+	                	pkg_dir_name=`cd ${ROS_SRC_BASE}/${repo} && ls ros-${ROS_DISTRO}-${pkg}_*.orig.tar.gz | sed -e "s#.orig.tar.gz##g" | sed -e "s#_#-#g"`
+			else
+	                	pkg_dir_name=`echo $path | sed -e "s#${repo}/##g"`
+			fi
 
 			mkdir -p ${ROS_GENERAGTED_BB_BASE}/${repo}/${pkg}
 
@@ -444,7 +471,7 @@ main()
 			echo "" >> $bbfile
 
 			gen_license $pkg ${ROS_SRC_BASE}/${repo}/${pkg_dir_name} $bbfile
-			gen_src_url $pkg $bbfile
+			gen_src_url $pkg $bbfile $git_url $tree $path
 			gen_depends $pkg $bbfile
 			gen_appends $pkg $bbfile
 			gen_build_type ${ROS_SRC_BASE}/${repo}/${pkg_dir_name} $bbfile
