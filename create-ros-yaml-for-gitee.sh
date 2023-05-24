@@ -39,6 +39,12 @@ main()
 		echo "- name: ${ROS_DISTRO}" >>${ROS_SIG_BASE}/$class/$project.yaml
 		echo "  type: protected" >>${ROS_SIG_BASE}/$class/$project.yaml
 		echo "  create_from: master" >>${ROS_SIG_BASE}/$class/$project.yaml
+		echo "- name: Multi-Version_ros-${ROS_DISTRO}_openEuler-22.03-LTS-Next" >>${ROS_SIG_BASE}/$class/$project.yaml
+		echo "  type: protected" >>${ROS_SIG_BASE}/$class/$project.yaml
+		echo "  create_from: ${ROS_DISTRO}" >>${ROS_SIG_BASE}/$class/$project.yaml
+		echo "- name: Multi-Version_ros-${ROS_DISTRO}_openEuler-22.03-LTS-SP2" >>${ROS_SIG_BASE}/$class/$project.yaml
+		echo "  type: protected" >>${ROS_SIG_BASE}/$class/$project.yaml
+		echo "  create_from: Multi-Version_ros-${ROS_DISTRO}_openEuler-22.03-LTS-Next" >>${ROS_SIG_BASE}/$class/$project.yaml
 		echo "type: public" >>${ROS_SIG_BASE}/$class/$project.yaml
 
 	done < ${ROS_PROJECTS_NAME}

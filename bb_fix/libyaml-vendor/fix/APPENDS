@@ -1,0 +1,17 @@
+do_configure:prepend() {
+	cp ${OPENEULER_SP_DIR}/libyaml_vendor/libyaml-0.2.5.tar.gz ${S}
+}
+
+SYSROOT_DIRS:append = " \
+	${ros_prefix}/cmake \
+"
+
+FILES:${PN}:append = " \
+	${ros_prefix}/lib \
+"
+FILES:${PN}-dev:remove = "\
+	${ros_prefix}/lib/lib*.so \
+"
+FILES:${PN}-dev:append = " \
+	${ros_prefix}/cmake \
+"

@@ -1,0 +1,3 @@
+FILES:${PN} += " \
+    ${ros_prefix}/src \
+"

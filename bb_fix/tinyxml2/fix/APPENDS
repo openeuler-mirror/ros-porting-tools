@@ -1,0 +1,3 @@
+do_configure:prepend() {
+	sed -i -e 's,lib/,${CMAKE_INSTALL_LIBDIR}/,g' ${S}/CMakeLists.txt
+}
