@@ -6,11 +6,9 @@
 -ament-cmake-ros-native
 -ament-lint-auto-native
 -ament-lint-common-native
-+ament-cmake-auto
-+ament-cmake-gmock
-+ament-cmake-gtest
-+ament-cmake
-+ament-cmake-pytest
-+ament-cmake-ros
-+ament-lint-auto
-+ament-lint-common
+-ament-index-cpp
+-ament-index-python
+-launch-testing-ament-cmake
+-rosidl-default-generators
++rosidl-generator-cpp
++rosidl-typesupport-c
