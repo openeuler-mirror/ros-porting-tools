@@ -63,3 +63,4 @@ ament-pyflakes ament-pyflakes-native
 ament-uncrustify ament-uncrustify-native
 ament-xmllint ament-xmllint-native
 ament-cmake-ros ament-cmake-ros-native
+GraphicsMagick-c++ graphicsmagick

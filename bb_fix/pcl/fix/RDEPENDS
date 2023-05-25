@@ -1,0 +1,4 @@
+-flann-static
+-libusb
+-openni
+-pkgconfig

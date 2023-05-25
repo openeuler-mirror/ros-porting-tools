@@ -164,7 +164,7 @@ gen_each_depend()
 	require_file=${OUTPUT}/.tempDepends
 
 	>$require_file
-	for dep in `grep "^${spec_deps}:" $spec | awk -F":" '{print $2}' | awk -F">=" '{print $1}' | grep -v " = "`
+	for dep in `grep "^${spec_deps}:" $spec | awk -F":" '{print $2}' | awk -F">=" '{print $1}' | grep -v " = " | sed -e "s#,##g"`
 	do
 	       	echo $dep >>$require_file
 	done

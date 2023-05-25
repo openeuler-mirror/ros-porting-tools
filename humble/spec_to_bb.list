@@ -22,3 +22,8 @@ cppcheck cmake yes cppcheck https://gitee.com/src-openeuler/cppcheck/raw/openEul
 python3-pydocstyle python yes python3-pydocstyle https://gitee.com/src-openeuler/python-pydocstyle/raw/openEuler-22.03-LTS-SP1/python-pydocstyle.spec 6.1.1.tar.gz pydocstyle-6.1.1
 #acl cmake yes acl https://gitee.com/src-openeuler/acl/raw/openEuler-22.03-LTS-SP1/acl.spec acl-2.3.1.tar.gz acl-2.3.1
 eigen3 cmake yes eigen3 https://gitee.com/will_niutao/eigen/raw/master/eigen3.spec eigen-3.3.8.tar.bz2 eigen-3.3.8
+pcl cmake no pcl https://gitee.com/will_niutao/pcl/raw/master/pcl.spec pcl-1.12.1.tar.gz pcl-pcl-1.12.1
+flann cmake no flann https://gitee.com/will_niutao/flann/raw/master/flann.spec flann-1.9.1.tar.gz flann-1.9.1
+qhull cmake no qhull https://gitee.com/src-openeuler/qhull/raw/openEuler-22.03-LTS-SP1/qhull.spec qhull-2015-src-7.2.0.tgz qhull-2015.2
+tinyxml cmake no tinyxml https://gitee.com/src-openeuler/tinyxml/raw/openEuler-22.03-LTS-SP2/tinyxml.spec tinyxml_2_6_2.tar.gz tinyxml
+orocos-kdl cmake no orocos-kdl https://gitee.com/src-openeuler/orocos_kdl/raw/master/orocos-kdl.spec v1.5.1.tar.gz orocos_kinematics_dynamics-1.5.1
