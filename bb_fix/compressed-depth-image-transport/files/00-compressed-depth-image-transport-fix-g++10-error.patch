@@ -1,0 +1,11 @@
+--- ros-humble-compressed-depth-image-transport-2.5.0/CMakeLists.txt_org	2023-05-30 19:17:28.452736654 +0800
++++ ros-humble-compressed-depth-image-transport-2.5.0/CMakeLists.txt	2023-05-30 19:18:14.454000180 +0800
+@@ -19,6 +19,8 @@
+ 
+ include_directories(include ${OpenCV_INCLUDE_DIRS})
+ 
++add_compile_options(-Wno-error=deprecated -Wno-error=maybe-uninitialized -Wno-error=deprecated-declarations -Wno-error=format-security)
++
+ add_library(
+     ${PROJECT_NAME}
+     SHARED
