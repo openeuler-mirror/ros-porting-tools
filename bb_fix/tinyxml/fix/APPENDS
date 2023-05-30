@@ -1,0 +1,17 @@
+do_configure() {
+}
+
+do_compile() {
+    ${CXX} -fPIC -o tinyxml.cpp.o -c ${S}/tinyxml.cpp
+    ${CXX} -fPIC -o tinystr.cpp.o -c ${S}/tinystr.cpp
+    ${CXX} -fPIC -o tinyxmlerror.cpp.o -c ${S}/tinyxmlerror.cpp
+    ${CXX} -fPIC -o tinyxmlparser.cpp.o -c ${S}/tinyxmlparser.cpp
+    ${CXX} -shared -o libtinyxml.so.0.${PV} -Wl,-soname,libtinyxml.so.0 *.cpp.o
+    ln -s libtinyxml.so.0.${PV} libtinyxml.so.0
+}
+
+do_install() {
+    mkdir -p ${D}/${includedir} ${D}/${libdir}
+    cp ${S}/tinyxml.h ${D}/${includedir}/
+    cp ${B}/libtinyxml.so* ${D}/${libdir}/
+}

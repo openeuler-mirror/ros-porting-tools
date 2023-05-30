@@ -1,0 +1,11 @@
+diff -Naur ros-humble-tf2-ros-0.25.2_org/CMakeLists.txt ros-humble-tf2-ros-0.25.2/CMakeLists.txt
+--- ros-humble-tf2-ros-0.25.2_org/CMakeLists.txt	2023-05-26 12:50:14.723683220 +0800
++++ ros-humble-tf2-ros-0.25.2/CMakeLists.txt	2023-05-26 12:50:39.504828059 +0800
+@@ -76,6 +76,7 @@
+   rclcpp::rclcpp
+   static_transform_broadcaster_node
+   tf2::tf2
++  class_loader::class_loader
+ )
+ 
+ add_executable(tf2_echo

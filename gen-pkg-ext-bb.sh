@@ -37,7 +37,13 @@ gen_single_line_config()
 	prefix=$3
 	config_key=$4
 
-	ret=`grep -i "^${prefix}" $spec | head -1 | awk -F"${prefix}" '{print $2}' | awk '$1=$1'`
+	prefix_org=`grep -i "^${prefix}" $spec | head -1 | cut -d':' -f1`
+	if [ "$prefix_org" == "" ]
+	then
+		error_log "${config_key} is null."
+	fi
+
+	ret=`grep -i "^${prefix_org}:" $spec | head -1 | awk -F"${prefix_org}:" '{print $2}' | awk '$1=$1'`
 	if [ "$ret" == "" ]
 	then
 		error_log "${config_key} is null."
@@ -55,7 +61,7 @@ gen_src_uri()
 	echo "SRC_URI = \" \\" >> $bbfile
 	echo "    file://\${OPENEULER_LOCAL_NAME}/${src_name} \\" >> $bbfile
 
-	for patch in `grep "^Patch.*: " $spec | awk '{print $2}'`
+	for patch in `grep "^Patch.*:" $spec | awk '{print $2}'`
 	do
 		echo "    file://\${OPENEULER_LOCAL_NAME}/${patch} \\" >> $bbfile
 	done
@@ -337,6 +343,7 @@ main()
 			echo "BBCLASSEXTEND = \"native nativesdk\"" >> $bbfile
 		else
 			echo "BBCLASSEXTEND = \"native\"" >> $bbfile
+			echo "SSTATE_SCAN_FILES:append = \" *.cmake\"" >> $bbfile
 		fi
 
 		#gen_files $bbfile

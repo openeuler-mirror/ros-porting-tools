@@ -1,0 +1,5 @@
+-qt5-qtbase-native
+-rviz-common-native
+-rviz-default-plugins-native
+-rviz-ogre-vendor-native
+-rviz-rendering-native

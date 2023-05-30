@@ -1,0 +1,25 @@
+diff -Naur ros-humble-libyaml-vendor-1.2.2_org/CMakeLists.txt ros-humble-libyaml-vendor-1.2.2/CMakeLists.txt
+--- ros-humble-libyaml-vendor-1.2.2_org/CMakeLists.txt	2023-05-14 21:45:23.823005698 +0800
++++ ros-humble-libyaml-vendor-1.2.2/CMakeLists.txt	2023-05-26 17:27:33.343895132 +0800
+@@ -92,11 +92,18 @@
+   set(yaml_LIBRARIES yaml)
+ endmacro()
+ 
+-build_libyaml()
+-set(extra_test_dependencies libyaml-0.2.5)
++#build_libyaml()
++#set(extra_test_dependencies libyaml-0.2.5)
++find_package(PkgConfig REQUIRED)
++pkg_check_modules(YAML REQUIRED)
++if(YAML_FOUND)
++	message(STATUS "Found yaml ${YAML_VERSION}")
++else()
++	message(FATAL_ERROR "yaml not found")
++endif()
+ 
+ ament_export_libraries(yaml)
+-ament_export_dependencies(yaml)
++#ament_export_dependencies(yaml)
+ 
+ if(BUILD_TESTING)
+   find_package(ament_lint_auto REQUIRED)

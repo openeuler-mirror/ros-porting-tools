@@ -1,0 +1,6 @@
+-qt5-qtbase
+-qt5-qtbase-gui
+-rviz-common
+-rviz-default-plugins
+-rviz-ogre-vendor
+-rviz-rendering

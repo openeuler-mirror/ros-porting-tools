@@ -63,4 +63,8 @@ ament-pyflakes ament-pyflakes-native
 ament-uncrustify ament-uncrustify-native
 ament-xmllint ament-xmllint-native
 ament-cmake-ros ament-cmake-ros-native
-GraphicsMagick-c++ graphicsmagick
+GraphicsMagick-c++-devel graphicsmagick
+boost-program-options boost
+SDL2-devel libsdl2
+Catch2-devel catch2
+libuuid-devel util-linux
