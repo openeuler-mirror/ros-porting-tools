@@ -63,3 +63,14 @@ ament-pyflakes ament-pyflakes-native
 ament-uncrustify ament-uncrustify-native
 ament-xmllint ament-xmllint-native
 ament-cmake-ros ament-cmake-ros-native
+GraphicsMagick-c++-devel graphicsmagick
+boost-program-options boost
+SDL2-devel libsdl2
+Catch2-devel catch2
+Catch2-native catch2-native
+libuuid-devel util-linux
+eigen3-devel libeigen
+eigen3 libeigen
+eigen3-native libeigen-native
+sqlite-devel sqlite3
+libcurl-devel curl

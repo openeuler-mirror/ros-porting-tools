@@ -1,0 +1,13 @@
+-jbigkit-native
+-lcms2-native
+-libjpeg-native
+-librsvg2-native
+-libtiff-native
+-libtool-ltdl-native
+-libwebp-native
+-libX11-native
+-libXext-native
+-libXt-native
+-lpr-native
+-perl-generators-native
+-xdg-utils-native

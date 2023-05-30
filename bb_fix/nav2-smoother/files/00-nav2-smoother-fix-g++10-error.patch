@@ -1,0 +1,12 @@
+diff -Naur ros-humble-nav2-smoother-1.1.6_org/CMakeLists.txt ros-humble-nav2-smoother-1.1.6/CMakeLists.txt
+--- ros-humble-nav2-smoother-1.1.6_org/CMakeLists.txt	2023-05-28 08:37:01.941396149 +0800
++++ ros-humble-nav2-smoother-1.1.6/CMakeLists.txt	2023-05-28 08:41:34.703989214 +0800
+@@ -26,6 +26,8 @@
+   include
+ )
+ 
++add_compile_options(-Wno-error=deprecated -Wno-error=maybe-uninitialized -Wno-error=deprecated-declarations -Wno-error=format-security)
++
+ set(executable_name smoother_server)
+ set(library_name ${executable_name}_core)
+ 

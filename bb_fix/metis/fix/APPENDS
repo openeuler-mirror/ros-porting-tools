@@ -1,0 +1,23 @@
+SRC_URI_remove += " \
+    file://${OPENEULER_LOCAL_NAME}/metis-width-datatype.patch \
+    file://${OPENEULER_LOCAL_NAME}/metis_lib64.patch \
+"
+
+do_patch() {
+    cd ${S}
+    patch -p0 file://${OPENEULER_LOCAL_NAME}/metis-libmetis.patch
+    patch -p0 file://${OPENEULER_LOCAL_NAME}/metis-shared-GKlib.patch
+    patch -p0 file://${OPENEULER_LOCAL_NAME}/metis-GKREGEX-GKRAND-LIBSUFFIX-fix.patch
+    patch -p0 file://${OPENEULER_LOCAL_NAME}/metis-pcre2.patch
+}
+
+EXTRA_OECMAKE += "-DGKLIB_PATH=${S}/GKlib -DSHARED=1"
+
+FILES:${PN} += " \
+    ${prefix}/lib/lib*.so \
+"
+
+SYSROOT_DIRS:append = " \
+    ${prefix}/lib \
+"
+

@@ -1,0 +1,5 @@
+-pkgconfig(libzmq)-native
+-catch2-native
+-zeromq-native
++catch2
++zeromq

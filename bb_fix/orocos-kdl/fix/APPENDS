@@ -1,0 +1,9 @@
+FILES:${PN}-dev += " \
+    ${datadir}/orocos_kdl/cmake \
+"
+S := "${WORKDIR}/orocos_kinematics_dynamics-1.5.1/orocos_kdl"
+
+SRC_URI_remove += " \
+    file://${OPENEULER_LOCAL_NAME}/orocos-kdl.pybind11.patch \
+    file://${OPENEULER_LOCAL_NAME}/orocos-kdl.python-site-packages.patch \
+"

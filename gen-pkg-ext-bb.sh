@@ -37,7 +37,13 @@ gen_single_line_config()
 	prefix=$3
 	config_key=$4
 
-	ret=`grep -i "^${prefix}" $spec | head -1 | awk -F"${prefix}" '{print $2}' | awk '$1=$1'`
+	prefix_org=`grep -i "^${prefix}" $spec | head -1 | cut -d':' -f1`
+	if [ "$prefix_org" == "" ]
+	then
+		error_log "${config_key} is null."
+	fi
+
+	ret=`grep -i "^${prefix_org}:" $spec | head -1 | awk -F"${prefix_org}:" '{print $2}' | awk '$1=$1'`
 	if [ "$ret" == "" ]
 	then
 		error_log "${config_key} is null."
@@ -55,9 +61,10 @@ gen_src_uri()
 	echo "SRC_URI = \" \\" >> $bbfile
 	echo "    file://\${OPENEULER_LOCAL_NAME}/${src_name} \\" >> $bbfile
 
-	for patch in `grep "^Patch.*: " $spec | awk '{print $2}'`
+	for patch in `grep "^Patch.*:" $spec | awk '{print $2}'`
 	do
-		echo "    file://\${OPENEULER_LOCAL_NAME}/${patch} \\" >> $bbfile
+		fix_patch=`echo $patch | sed -e "s#%{name}#$pkg#g"`
+		echo "    file://\${OPENEULER_LOCAL_NAME}/${fix_patch} \\" >> $bbfile
 	done
 
 	other_cfg=`ls ${BB_FIX}/$pkg 2>/dev/null | grep -v fix`
@@ -164,7 +171,7 @@ gen_each_depend()
 	require_file=${OUTPUT}/.tempDepends
 
 	>$require_file
-	for dep in `grep "^${spec_deps}:" $spec | awk -F":" '{print $2}' | awk -F">=" '{print $1}' | grep -v " = "`
+	for dep in `grep "^${spec_deps}:" $spec | awk -F":" '{print $2}' | awk -F">=" '{print $1}' | grep -v " = " | sed -e "s#,##g"`
 	do
 	       	echo $dep >>$require_file
 	done
@@ -338,6 +345,8 @@ main()
 		else
 			echo "BBCLASSEXTEND = \"native\"" >> $bbfile
 		fi
+
+		[ "$package_type" == "cmake" ] && echo "SSTATE_SCAN_FILES:append = \" *.cmake\"" >> $bbfile
 
 		#gen_files $bbfile
         done < ${SPEC_TO_BB_LIST}

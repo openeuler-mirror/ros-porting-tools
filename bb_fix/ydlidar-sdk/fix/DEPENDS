@@ -1,0 +1,6 @@
+-gtest-native
+-python3-native
+-swig-native
++gtest
++python3
++swig

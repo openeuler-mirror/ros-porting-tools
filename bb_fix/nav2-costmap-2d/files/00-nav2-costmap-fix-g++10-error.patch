@@ -1,0 +1,11 @@
+diff -Naur ros-humble-nav2-costmap-2d-1.1.6_org/CMakeLists.txt ros-humble-nav2-costmap-2d-1.1.6/CMakeLists.txt
+--- ros-humble-nav2-costmap-2d-1.1.6_org/CMakeLists.txt	2023-05-27 17:44:05.955546861 +0800
++++ ros-humble-nav2-costmap-2d-1.1.6/CMakeLists.txt	2023-05-27 17:44:26.912673760 +0800
+@@ -37,6 +37,7 @@
+ 
+ add_definitions(${EIGEN3_DEFINITIONS})
+ 
++add_compile_options(-Wno-error=format-security -Wno-error=maybe-uninitialized)
+ add_library(nav2_costmap_2d_core SHARED
+   src/array_parser.cpp
+   src/costmap_2d.cpp

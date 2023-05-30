@@ -1,0 +1,8 @@
+-asciidoc-native
+-openpgm-native
+-xmlto-native
+-krb5-native
+-libsodium-native
+-libunwind-native
++libsodium
++libunwind

@@ -2,3 +2,4 @@
 +ament-cmake-core-native
 -ament-package
 +ament-package-native
++python3-numpy-native

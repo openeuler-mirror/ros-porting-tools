@@ -95,6 +95,23 @@ main()
 			fi
 		fi
 
+		echo $url | grep -q "^https://gitee.com"
+		if [ "$?" -eq 0 ]
+		then
+			echo $url | grep -q ".git$"
+			if [ "$?" -eq 0 ]
+			then
+				project_name=`echo $url | awk 'BEGIN {FS="\\\.git"} {print $1}' | awk -F"/" '{print $NF}'`
+				tree=master
+				new_url=$url
+			else
+				project_name=`echo $url | awk -F"/tree/" '{print $1}' | awk -F"/" '{print $NF}'`
+				tree=`echo $url | awk -F"/tree/" '{print $2}'`
+				new_url=`echo $url | awk -F"/tree/" '{print $1}'`.git
+				git_url=`echo $new_url | sed -e "s#/${project_name}.git##g"`
+			fi
+		fi
+
 		echo $url | grep -q "^https://bitbucket.org"
 		if [ "$?" -eq 0 ]
 		then
@@ -113,7 +130,10 @@ main()
 			exit 1
 		fi
 
-		echo -e "$pkg\t$project_name\t$version" >> ${ROS_PKG_LIST}
+		[ "$git_url" == "" ] && git_url="None"
+		[ "$tree" == "" ] && tree="None"
+
+		echo -e "$pkg\t$project_name\t$version\t$git_url\t$tree" >> ${ROS_PKG_LIST}
 
 		grep -Fq "$new_url" ${ROS_REPOS_URL}
 		if [ $? -eq 0 ]

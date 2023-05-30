@@ -1,0 +1,7 @@
+inherit autotools
+EXTRA_OECONF += "--enable-static=no --enable-shared=yes"
+FILES:${PN}-dev += " \
+    ${datadir}/GraphicsMagick-1.3.30 \
+    ${libdir}/GraphicsMagick-1.3.30 \
+"
+

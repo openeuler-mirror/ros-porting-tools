@@ -1,0 +1,9 @@
+-hardlink-native
+-lapack-native
+-metis-native
+-openblas-native
+-tbb-native
++lapack
++openblas
++tbb
+

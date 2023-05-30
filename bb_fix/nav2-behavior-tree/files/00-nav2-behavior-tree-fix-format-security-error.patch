@@ -1,0 +1,11 @@
+diff -Naur ros-humble-nav2-behavior-tree-1.1.6_org/CMakeLists.txt ros-humble-nav2-behavior-tree-1.1.6/CMakeLists.txt
+--- ros-humble-nav2-behavior-tree-1.1.6_org/CMakeLists.txt	2023-05-27 22:16:39.149893987 +0800
++++ ros-humble-nav2-behavior-tree-1.1.6/CMakeLists.txt	2023-05-27 22:16:07.360701746 +0800
+@@ -18,6 +18,7 @@
+ find_package(std_srvs REQUIRED)
+ find_package(nav2_util REQUIRED)
+ 
++add_compile_options(-Wno-error=format-security)
+ nav2_package()
+ 
+ include_directories(

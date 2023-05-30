@@ -1,0 +1,5 @@
+-libX11-native
+-libXaw-native
+-libXrandr-native
+-mesa-libGL-native
+-mesa-libGLU-native

@@ -1,0 +1,16 @@
+-qt5-qtbase-native
+-rviz-common-native
+-rviz-default-plugins-native
+-rviz-ogre-vendor-native
+-rviz-rendering-native
++rosidl-adapter-native
++ament-cmake-ros-native
++ament-cmake-gmock-native
++python3-numpy-native
++rosidl-generator-c-native
++rosidl-generator-cpp-native
++rosidl-generator-py-native
++rosidl-typesupport-introspection-cpp-native
++rosidl-typesupport-fastrtps-cpp-native
++rosidl-typesupport-fastrtps-c-native
++rosidl-typesupport-cpp-native

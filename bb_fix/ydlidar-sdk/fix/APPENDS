@@ -1,0 +1,17 @@
+FILES:${PN}-dev:remove = " \
+    ${libdir}/lib*.so \
+"
+
+FILES:${PN} += " \
+    ${prefix}/startup \
+    ${libdir}/lib*.so \
+"
+FILES:${PN}-doc += " \
+    ${datadir}/YDLIDAR_SDK/doc \
+"
+FILES:${PN}-dev += " \
+    ${datadir}/YDLIDAR_SDK/*.* \
+    ${datadir}/YDLIDAR_SDK/common \
+"
+
+EXTRA_OECMAKE += " -DBUILD_TEST=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=${prefix} -DCMAKE_INSTALL_LIBDIR=${libdir}"

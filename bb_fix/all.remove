@@ -9,3 +9,6 @@ gdb-native
 libatomic
 libatomic-native
 cmake
+perl(
+perl(ExtUtils-native
+eigen3-static-native

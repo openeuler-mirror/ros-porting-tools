@@ -1,0 +1,11 @@
+--- originbot_bringup/CMakeLists.txt_org	2023-05-30 11:04:52.950665464 +0800
++++ originbot_bringup/CMakeLists.txt	2023-05-30 11:02:52.610932859 +0800
+@@ -27,7 +27,7 @@
+ find_package(geometry_msgs REQUIRED)
+ find_package(tf2_ros REQUIRED)
+ find_package(joy_linux REQUIRED)
+-find_package(teleop_twist_joy REQUIRED)
++#find_package(teleop_twist_joy REQUIRED)
+ 
+ install(
+   DIRECTORY launch param config

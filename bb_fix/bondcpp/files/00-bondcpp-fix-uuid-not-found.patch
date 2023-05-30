@@ -1,0 +1,31 @@
+diff -Naur ros-humble-bondcpp-3.0.2_org/CMakeLists.txt ros-humble-bondcpp-3.0.2/CMakeLists.txt
+--- ros-humble-bondcpp-3.0.2_org/CMakeLists.txt	2023-05-26 14:54:48.457765395 +0800
++++ ros-humble-bondcpp-3.0.2/CMakeLists.txt	2023-05-26 14:55:09.900887997 +0800
+@@ -17,9 +17,9 @@
+ find_package(Threads REQUIRED)
+ 
+ find_package(PkgConfig REQUIRED)
+-pkg_check_modules(UUID REQUIRED uuid)
++#pkg_check_modules(UUID REQUIRED uuid)
+ # we have to find the absolute path to uuid as target_link_directories is not available before cmake 3.13
+-find_library(uuid_ABS_PATH ${UUID_LIBRARIES} PATHS ${UUID_LIBRARY_DIRS})
++#find_library(uuid_ABS_PATH ${UUID_LIBRARIES} PATHS ${UUID_LIBRARY_DIRS})
+ 
+ add_library(${PROJECT_NAME}
+   SHARED
+@@ -28,13 +28,13 @@
+ target_include_directories(${PROJECT_NAME} PUBLIC
+   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+   $<INSTALL_INTERFACE:include>
+-  ${UUID_INCLUDE_DIRS})
++  )
+ ament_target_dependencies(${PROJECT_NAME}
+   bond
+   rclcpp
+   rclcpp_lifecycle
+   smclib)
+-target_link_libraries(${PROJECT_NAME} ${uuid_ABS_PATH})
++target_link_libraries(${PROJECT_NAME} uuid)
+ 
+ install(
+   TARGETS ${PROJECT_NAME}

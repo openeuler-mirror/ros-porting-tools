@@ -6,6 +6,10 @@ SYSROOT_DIRS:append = " \
 	${ros_prefix}/cmake \
 "
 
+SYSROOT_DIRS_NATIVE:append = " \
+	${prefix}/cmake \
+"
+
 FILES:${PN}:append = " \
 	${ros_prefix}/lib \
 "
@@ -14,4 +18,12 @@ FILES:${PN}-dev:remove = "\
 "
 FILES:${PN}-dev:append = " \
 	${ros_prefix}/cmake \
+"
+
+DEPENDS:append = " \
+    libyaml \
+"
+
+RDEPENDS:${PN}:append = " \
+    libyaml \
 "

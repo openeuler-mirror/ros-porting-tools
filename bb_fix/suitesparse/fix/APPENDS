@@ -1,0 +1,159 @@
+do_configure() {
+    for fil in $(grep -Frl 'pragma ivdep' .); do
+      sed -i.orig 's/pragma ivdep/pragma GCC ivdep/' $fil
+      touch -r ${fil}.orig $fil
+      rm -f ${fil}.orig
+    done
+
+}
+do_compile() {
+    cd ${S}
+    export AUTOCC=no
+    install -d Doc/{AMD,BTF,CAMD,CCOLAMD,CHOLMOD,COLAMD,KLU,LDL,UMFPACK,SPQR,RBio} Lib Include
+    export BLAS="-lblas"
+    export LAPACK="-llapack"
+    pushd SuiteSparse_config
+      make CFLAGS="$CFLAGS" BLAS="$BLAS"
+      mkdir -p Lib
+      ar x libsuitesparseconfig.a
+      cp libsuitesparseconfig.a Lib
+      cp -a *.a ../lib
+      cp -p *.h ../Include
+    popd
+    
+    pushd AMD
+      pushd Lib
+        make CFLAGS="$CFLAGS" BLAS="$BLAS"
+      popd
+      cp -p Include/*.h ../Include
+      cp -p README.txt Doc/License.txt Doc/lesser.txt Doc/ChangeLog Doc/*.pdf ../Doc/AMD
+    popd
+    
+    pushd BTF
+      pushd Lib
+        make CFLAGS="$CFLAGS" BLAS="$BLAS"
+      popd
+      cp -p Include/*.h ../Include
+      cp -p README.txt Doc/* ../Doc/BTF
+    popd
+    
+    pushd CAMD
+      pushd Lib
+        make CFLAGS="$CFLAGS" BLAS="$BLAS"
+      popd
+      cp -p Include/*.h ../Include
+      cp -p README.txt Doc/ChangeLog Doc/License.txt Doc/*.pdf ../Doc/CAMD
+    popd
+    
+    pushd CCOLAMD
+      pushd Lib
+        make CFLAGS="$CFLAGS" BLAS="$BLAS"
+      popd
+      cp -p Include/*.h ../Include
+      cp -p README.txt Doc/* ../Doc/CCOLAMD
+    popd
+    
+    pushd COLAMD
+      pushd Lib
+        make CFLAGS="$CFLAGS" BLAS="$BLAS"
+      popd
+      cp -p Include/*.h ../Include
+      cp -p README.txt Doc/* ../Doc/COLAMD
+    popd
+    
+    pushd CHOLMOD
+      pushd Lib
+        make CFLAGS="$CFLAGS" LAPACK="$LAPACK" BLAS="$BLAS"
+      popd
+      cp -p Include/*.h ../Include
+      cp -p README.txt Doc/*.pdf ../Doc/CHOLMOD
+      cp -p Cholesky/lesser.txt ../Doc/CHOLMOD/Cholesky_License.txt
+      cp -p Core/lesser.txt ../Doc/CHOLMOD/Core_License.txt
+      cp -p MatrixOps/gpl.txt ../Doc/CHOLMOD/MatrixOps_License.txt
+      cp -p Partition/lesser.txt ../Doc/CHOLMOD/Partition_License.txt
+      cp -p Supernodal/gpl.txt ../Doc/CHOLMOD/Supernodal_License.txt
+    popd
+    
+    pushd CXSparse
+      pushd Lib
+        make CFLAGS="$CFLAGS" BLAS="$BLAS"
+      popd
+      cp -p Include/cs.h ../Include
+      mkdir -p ../Doc/CXSparse/
+      cp -p Doc/* ../Doc/CXSparse
+    popd
+    
+    pushd KLU
+      pushd Lib
+        make CFLAGS="$CFLAGS" BLAS="$BLAS"
+      popd
+      cp -p Include/*.h ../Include
+      cp -p README.txt Doc/lesser.txt ../Doc/KLU
+    popd
+    
+    pushd LDL
+      pushd Lib
+        make CFLAGS="$CFLAGS" BLAS="$BLAS"
+      popd
+      cp -p Include/*.h ../Include
+      cp -p README.txt Doc/ChangeLog Doc/lesser.txt Doc/*.pdf ../Doc/LDL
+    popd
+    
+    pushd UMFPACK
+      pushd Lib
+        make CFLAGS="$CFLAGS" BLAS="$BLAS"
+      popd
+      cp -p Include/*.h ../Include
+      cp -p README.txt Doc/License.txt Doc/ChangeLog Doc/gpl.txt Doc/*.pdf ../Doc/UMFPACK
+    popd
+    
+    pushd SPQR
+      pushd Lib
+        make CFLAGS="$CFLAGS -DHAVE_TBB -DNPARTITION" TBB=-ltbb BLAS="$BLAS"
+      popd
+      cp -p Include/*.h* ../Include
+      cp -p README{,_SPQR}.txt
+      cp -p README_SPQR.txt Doc/* ../Doc/SPQR
+    popd
+    
+    pushd RBio
+      pushd Lib
+        make CFLAGS="$CFLAGS" BLAS="$BLAS"
+      popd
+      cp -p Include/*.h ../Include
+      cp -p README.txt Doc/ChangeLog Doc/License.txt ../Doc/RBio
+    popd
+
+}
+
+do_install() {
+    cd ${S}
+    install -d ${D}/${libdir}
+    install -d ${D}/${includedir}/${PN}
+    install -d ${D}/${datadir}/doc
+    install -m 0644 Include/*.{h,hpp} ${D}/${includedir}/${PN}
+    install -m 0755  */Lib/*.a lib/*.so* ${D}/${libdir}
+    rm -rf Licenses
+    mkdir Licenses
+    find */ -iname lesser.txt -o -iname lesserv3.txt -o -iname license.txt -o \
+        -iname gpl.txt -o -iname GPLv2.txt -o -iname license \
+        -a -not -type d | while read f; do
+            b="${f%%/*}"
+            r="${f#$b}"
+            x="$(echo "$r" | sed 's|/doc/|/|gi')"
+            install -m0644 -D "$f" "./Licenses/$b/$x"
+        done
+    find Licenses -type f -exec install -Dm 0644 "{}" "${D}/${datadir}/doc/${PN}/{}" \;
+    
+    file `find ${D}/${libdir} -type f` | grep -w ELF  |awk -F: '{print $1}' | xargs chrpath -d
+}
+
+FILES:${PN}-dev:remove = " \
+    ${libdir}/lib*.so \
+"
+
+FILES:${PN} += " \
+    ${libdir}/lib*.so \
+"
+
+INSANE_SKIP:${PN} += "dev-so"
