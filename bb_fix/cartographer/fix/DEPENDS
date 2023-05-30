@@ -1,0 +1,7 @@
+-cmake-native
+-git-native
+-gtest-native
+-python3-sphinx-native
++python3-sphinx
++gtest
++protobuf-native

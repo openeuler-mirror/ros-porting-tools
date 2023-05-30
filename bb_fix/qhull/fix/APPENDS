@@ -1,0 +1,15 @@
+FILES:${PN} += " \
+    ${prefix}/lib/*.so* \
+"
+
+FILES:${PN}-staticdev += " \
+    ${prefix}/lib/*.a \
+"
+
+CFLAGS += "-fPIC"
+
+EXTRA_OECMAKE += "\
+    -DCMAKE_SKIP_RPATH=ON \
+"
+INSANE_SKIP:${PN} += "dev-so"
+

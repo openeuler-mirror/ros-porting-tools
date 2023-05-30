@@ -1,0 +1,5 @@
+-%{blaslib}-native
+-suitesparse-native
+-tbb-native
++suitesparse
++tbb

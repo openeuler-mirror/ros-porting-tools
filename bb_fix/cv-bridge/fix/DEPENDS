@@ -1,0 +1,4 @@
+-boost-native
+-python3-numpy
++boost
++python3-numpy-native

@@ -63,7 +63,8 @@ gen_src_uri()
 
 	for patch in `grep "^Patch.*:" $spec | awk '{print $2}'`
 	do
-		echo "    file://\${OPENEULER_LOCAL_NAME}/${patch} \\" >> $bbfile
+		fix_patch=`echo $patch | sed -e "s#%{name}#$pkg#g"`
+		echo "    file://\${OPENEULER_LOCAL_NAME}/${fix_patch} \\" >> $bbfile
 	done
 
 	other_cfg=`ls ${BB_FIX}/$pkg 2>/dev/null | grep -v fix`
@@ -343,8 +344,9 @@ main()
 			echo "BBCLASSEXTEND = \"native nativesdk\"" >> $bbfile
 		else
 			echo "BBCLASSEXTEND = \"native\"" >> $bbfile
-			echo "SSTATE_SCAN_FILES:append = \" *.cmake\"" >> $bbfile
 		fi
+
+		[ "$package_type" == "cmake" ] && echo "SSTATE_SCAN_FILES:append = \" *.cmake\"" >> $bbfile
 
 		#gen_files $bbfile
         done < ${SPEC_TO_BB_LIST}

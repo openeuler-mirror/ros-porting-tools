@@ -21,7 +21,7 @@ python3-catkin-sphinx python yes python3-catkin-sphinx https://gitee.com/will_ni
 cppcheck cmake yes cppcheck https://gitee.com/src-openeuler/cppcheck/raw/openEuler-22.03-LTS-SP1/cppcheck.spec 2.6.3.tar.gz cppcheck-2.6.3
 python3-pydocstyle python yes python3-pydocstyle https://gitee.com/src-openeuler/python-pydocstyle/raw/openEuler-22.03-LTS-SP1/python-pydocstyle.spec 6.1.1.tar.gz pydocstyle-6.1.1
 #acl cmake yes acl https://gitee.com/src-openeuler/acl/raw/openEuler-22.03-LTS-SP1/acl.spec acl-2.3.1.tar.gz acl-2.3.1
-eigen3 cmake no eigen3 https://gitee.com/will_niutao/eigen/raw/master/eigen3.spec eigen-3.3.8.tar.bz2 eigen-3.3.8
+#eigen3 cmake no eigen3 https://gitee.com/will_niutao/eigen/raw/master/eigen3.spec eigen-3.3.8.tar.bz2 eigen-3.3.8
 pcl cmake no pcl https://gitee.com/will_niutao/pcl/raw/master/pcl.spec pcl-1.12.1.tar.gz pcl-pcl-1.12.1
 flann cmake no flann https://gitee.com/will_niutao/flann/raw/master/flann.spec 1.9.2.tar.gz flann-1.9.2
 qhull cmake no qhull https://gitee.com/src-openeuler/qhull/raw/openEuler-22.03-LTS-SP1/qhull.spec qhull-2015-src-7.2.0.tgz qhull-2015.2
