@@ -1,5 +1,5 @@
---- originbot/originbot_base/src/originbot_base.cpp_org	2023-05-30 11:12:44.857538312 +0800
-+++ originbot/originbot_base/src/originbot_base.cpp	2023-05-30 11:25:38.522997804 +0800
+--- originbot_base/src/originbot_base.cpp_org	2023-05-30 11:12:44.857538312 +0800
++++ originbot_base/src/originbot_base.cpp	2023-05-30 11:25:38.522997804 +0800
 @@ -20,17 +20,17 @@
  {
      // 加载参数
