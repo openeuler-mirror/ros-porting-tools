@@ -9,6 +9,9 @@ GITEE_ORG=`grep GITEE_ORG config | cut -d'=' -f2`
 GITEE_DOMAIN=`grep GITEE_DOMAIN config | cut -d'=' -f2`
 OBS_DOMAIN=`grep OBS_DOMAIN config | cut -d'=' -f2`
 OBS_PROJECT=`grep OBS_PROJECT config | cut -d'=' -f2`
+OPENEULER_BASE_BRANCH=`grep OPENEULER_BASE_BRANCH config | cut -d'=' -f2`
+ROS_PKG_BRANCH=Multi-Version_ros-${ROS_DISTRO}_${OPENEULER_BASE_BRANCH}
+ROS_DEP_PKG_BRANCH=${OPENEULER_BASE_BRANCH}
 
 OUTPUT=${ROOT}/output
 ROS_OUTPUT_TMP=${OUTPUT}/.tmp
