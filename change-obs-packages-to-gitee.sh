@@ -31,9 +31,9 @@ main()
 		grep -q "^${pkg}$" ${ROS_PROJECTS_NAME}
 		if [ $? -eq 0 ]
 		then
-			branch=${ROS_PKG_BRANCH}
+			branch=${OPENEULER_SP_BRANCH}
 		else
-			branch=${ROS_DEP_PKG_BRANCH}
+			branch=${OPENEULER_ROS_DEP_PKG_BRANCH}
 		fi
 
 		cd ${OBS_BASE}/${OBS_PROJECT}/${pkg}
