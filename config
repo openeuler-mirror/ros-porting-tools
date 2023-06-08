@@ -6,4 +6,5 @@ GITEE_ORG=src-openeuler
 GITEE_DOMAIN=gitee.com
 OBS_DOMAIN=build.openeuler.openatom.cn
 OBS_PROJECT=openEuler:ROS:humble
-OPENEULER_BASE_BRANCH=openEuler-22.03-LTS-SP2
+OPENEULER_BASE_VERSION=openEuler-22.03-LTS
+OPENEULER_SP_VERSION=SP2

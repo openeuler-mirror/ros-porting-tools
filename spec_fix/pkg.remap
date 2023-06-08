@@ -108,3 +108,5 @@ python3-pil python3-pillow
 libomp-dev libomp-devel
 libglew-dev glew-devel
 glut freeglut
+python3-nose python3-nose2
+python3-collada python3-pycollada

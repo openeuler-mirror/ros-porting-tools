@@ -8,6 +8,14 @@ OBS_BASE=${OUTPUT}/obs
 
 prepare()
 {
+	if [ "$USER_INFO" == "" ]
+	then
+		echo "Usage:"
+		echo "    ./$0 user:pass"
+		echo ""
+		exit 1
+	fi
+
 	mkdir -p ${OBS_BASE}
 }
 
