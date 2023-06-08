@@ -2,8 +2,8 @@
 
 . base.sh
 
-ROS_PROJECTS_LIST=${ROOT}/${ROS_DISTRO}/ros-projects.list
-ROS_VERSION_FIX=${ROOT}/${ROS_DISTRO}/ros-version-fix
+ROS_PROJECTS_LIST=${ROOT}/ros/${ROS_DISTRO}/ros-projects.list
+ROS_VERSION_FIX=${ROOT}/ros/${ROS_DISTRO}/ros-version-fix
 ROS_REPOS=${OUTPUT}/ros.repos
 ROS_REPOS_URL=${OUTPUT}/ros.url
 
