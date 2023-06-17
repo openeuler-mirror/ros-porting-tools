@@ -11,6 +11,14 @@ GITEE_PUSH_LIST=${GITEE_BASE}/push.list
 
 prepare()
 {
+	if [ "$act" == "" -o "$GITEE_TOKEN" == "" ]
+	then
+		echo "Usage:"
+		echo "    ./$0 [fork|clone|commit|pr|merge] gitee_token"
+		echo ""
+		exit 1
+	fi
+
 	if [ ! -f ${ROS_PROJECTS_NAME} ]
 	then
 		error_log "Please give the source repo path of ros"
@@ -113,6 +121,8 @@ commit_projects()
 			#info_log "nothing changed of project $project, continue"
 			continue
 		fi
+		#git status
+		#continue
 
 		git add -A *
 		git add -u

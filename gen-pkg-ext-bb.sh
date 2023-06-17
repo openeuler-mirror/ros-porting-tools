@@ -4,7 +4,7 @@
 
 GEN_ONE=$1
 
-SPEC_TO_BB_LIST=${ROS_DISTRO}/spec_to_bb.list
+SPEC_TO_BB_LIST=${ROOT}/ros/${ROS_DISTRO}/spec_to_bb.list
 BB_FIX=${ROOT}/bb_fix
 BB_FIX_PKG_REMAP=${BB_FIX}/pkg.remap
 BB_DEVTOOLS_BASE=${ROS_BB_BASE}/recipes-devtools

@@ -1,0 +1,3 @@
+SRC_URI_remove = " \
+    file://${OPENEULER_LOCAL_NAME}/00-yaml-cpp-vendor-fix-eulermaker-x86-build-error.patch \
+"
