@@ -21,6 +21,7 @@ ROS_GITEE_BASE=${OUTPUT}/gitee
 LOG=${OUTPUT}/ros-tools.log
 
 ROS_PROJECTS_NAME=${OUTPUT}/ros-projects-name.list
+ROS_3RDPARTY_NAME=$PWD/ros-3rdparty.list
 ROS_PKG_LIST=${OUTPUT}/ros-pkg.list
 
 mkdir -p ${OUTPUT}
