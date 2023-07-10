@@ -44,6 +44,8 @@ ROS_PREP_FIX
 # Needed to bootstrap since the ros_workspace package does not yet exist.
 export PYTHONPATH=/opt/ros/%{ros_distro}/lib/python%{python3_version}/site-packages
 
+export ROS_DISTRO=%{ros_distro}
+
 # In case we're installing to a non-standard location, look for a setup.sh
 # in the install tree and source it.  It will set things like
 # CMAKE_PREFIX_PATH, PKG_CONFIG_PATH, and PYTHONPATH.
