@@ -45,6 +45,7 @@ ROS_PREP_FIX
 export PYTHONPATH=/opt/ros/%{ros_distro}/lib/python%{python3_version}/site-packages
 
 export ROS_DISTRO=%{ros_distro}
+export ROS_PYTHON_VERSION=%{python3_version}
 
 # In case we're installing to a non-standard location, look for a setup.sh
 # in the install tree and source it.  It will set things like
