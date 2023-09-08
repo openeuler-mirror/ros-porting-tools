@@ -61,6 +61,7 @@ mkdir -p .obj-%{_target_platform} && cd .obj-%{_target_platform}
     -DCMAKE_INSTALL_PREFIX="/opt/ros/%{ros_distro}" \
     -DAMENT_PREFIX_PATH="/opt/ros/%{ros_distro}" \
     -DCMAKE_PREFIX_PATH="/opt/ros/%{ros_distro}" \
+    -DCMAKE_INSTALL_LIBDIR="/opt/ros/%{ros_distro}/lib" \
     -DSETUPTOOLS_DEB_LAYOUT=OFF \
 %if !0%{?with_tests}
     -DBUILD_TESTING=OFF \

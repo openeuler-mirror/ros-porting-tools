@@ -108,6 +108,8 @@ main()
 
 	rpm_spec_dependency_analyzer --output ros.dot *.spec
 
+	sed -i "/GraphicsMagick_c/d" ros.dot
+
 	while read project
 	do
 		sed -i "/$project$/d" ros.dot
