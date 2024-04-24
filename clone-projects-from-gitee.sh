@@ -2,9 +2,9 @@
 
 . base.sh
 
-GITEE_URL=git@gitee.com
-GITEE_ORG=will_niutao
+GITEE_URL=git@${GITEE_DOAMIN}
 GITEE_BASE=${OUTPUT}/gitee
+CLONE_BRANCH=humble
 
 prepare()
 {
@@ -30,12 +30,11 @@ main()
 		if [ -d ${GITEE_BASE}/${project}/.git ]
 		then
 			cd ${GITEE_BASE}/${project}
-			git pull origin humble
+			git pull origin ${CLONE_BRANCH}
 			continue
 		fi
 
 		cd ${GITEE_BASE}
-		#git clone ${GITEE_DOMAIN}:${GITEE_ORG}/${project}.git
 		git clone https://${GITEE_DOMAIN}/${GITEE_ORG}/${project}.git
 		if [ $? -ne 0 ]
 		then
@@ -43,12 +42,12 @@ main()
 			continue
 		fi
 		cd ${project}
-		git branch -a | grep ${ROS_DISTRO}
+		git branch -a | grep ${CLONE_BRANCH}
 		if [ $? -eq 0 ]
 		then
-			git checkout ${ROS_DISTRO}
+			git checkout ${CLONE_BRANCH}
 		else
-			git checkout -b ${ROS_DISTRO}
+			git checkout -b ${CLONE_BRANCH}
 		fi
 
 	done < ${ROS_PROJECTS_NAME}
