@@ -12,7 +12,7 @@ prepare()
 {
 	if [ ! -d "${OBS_BASE}" -o ! -f "${OBS_PACKAGES_LIST}" ]
 	then
-		log_error "please run download-osb-projects.sh first"
+		log_error "please run download-obs-projects.sh first"
 		exit 1
 	fi
 }
