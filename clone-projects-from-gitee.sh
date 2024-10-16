@@ -2,7 +2,7 @@
 
 . base.sh
 
-GITEE_URL=git@${GITEE_DOAMIN}
+GITEE_URL=git@${GITEE_DOMAIN}
 GITEE_BASE=${OUTPUT}/gitee
 CLONE_BRANCH=humble
 
