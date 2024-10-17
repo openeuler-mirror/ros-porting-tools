@@ -126,7 +126,7 @@ main()
 
 		if [ "$project_name" = "" -o "${new_url}" = "" -o "$version" = "" ]
 		then
-			error_log "Faild to analyse $pkg $url $new_url $version"
+			error_log "Failed to analyse $pkg $url $new_url $version"
 			exit 1
 		fi
 
