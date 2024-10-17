@@ -37,7 +37,7 @@ main()
                 cd ${OUTPUT}/obs_project/${OBS_PROJECT}
                 osc mkpac $project
 
-	        #2. copy obs prject
+	        #2. copy obs project
 		cp ${OUTPUT}/obs/${project}/_service ${OUTPUT}/obs_project/${OBS_PROJECT}/${project}/_service
 
 		#3. push _service 
@@ -60,7 +60,7 @@ main()
                 cd ${OUTPUT}/obs_project/${OBS_PROJECT}
                 osc mkpac $project
 
-	        #2. copy obs prject
+	        #2. copy obs project
 		cp ${OUTPUT}/obs/${project}/_service ${OUTPUT}/obs_project/${OBS_PROJECT}/${project}/_service
 
 		#3. push _service 
