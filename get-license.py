@@ -27,7 +27,7 @@ def get_license(lic):
     """
     Temporary import the license modification from catkin_pkg validation.
 
-    Once all active ROS packages are updated to have more reasonble license
+    Once all active ROS packages are updated to have more reasonable license
     values, this whole function can be dropped and the value should be the
     same as what package.xml says.
     """
