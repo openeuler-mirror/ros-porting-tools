@@ -2464,7 +2464,7 @@ index 0000000..c49ce81
 +    * @brief Set and Get LiDAR single channel.
 +    * Whether LiDAR communication channel is a single-channel
 +    * @note For a single-channel LiDAR, if the settings are reversed.\n
-+    * an error will occur in obtaining device information and the LiDAR will Faied to Start.\n
++    * an error will occur in obtaining device information and the LiDAR will Failed to Start.\n
 +    * For dual-channel LiDAR, if th setttings are reversed.\n
 +    * the device information cannot be obtained.\n
 +    * Set the single channel to match the LiDAR.
